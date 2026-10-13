@@ -83,6 +83,7 @@ function SettingsSidebar() {
     const organizations = auth.user?.organizations ?? [];
     const org = organizations.find((o) => o.id === auth.org?.id) ?? organizations[0];
     const orgBase = org ? `/settings/organizations/${org.id}` : null;
+    const canCreateApplication = can(auth.permissions, 'application.create');
 
     return (
         <aside className="sticky top-0 flex h-screen w-[256px] shrink-0 flex-col px-2">
@@ -131,13 +132,8 @@ function SettingsSidebar() {
                         <NavLink href={`${orgBase}/usage`} icon={BarChart3} active={path === `${orgBase}/usage`}>
                             Usage
                         </NavLink>
-                        {can(auth.permissions, 'application.create') && (
-                            <NavLink href={`/applications/create?organization=${org.id}`} icon={Plus}>
-                                Add Application
-                            </NavLink>
-                        )}
 
-                        {org.applications.length > 0 && <GroupLabel className="pt-6">Applications</GroupLabel>}
+                        {(org.applications.length > 0 || canCreateApplication) && <GroupLabel className="pt-6">Applications</GroupLabel>}
                         <div className="space-y-1">
                             {org.applications.map((application) => {
                                 const href = `${orgBase}/applications/${application.id}/general`;
@@ -157,6 +153,11 @@ function SettingsSidebar() {
                                     </Link>
                                 );
                             })}
+                            {canCreateApplication && (
+                                <NavLink href={`/applications/create?organization=${org.id}`} icon={Plus}>
+                                    Add Application
+                                </NavLink>
+                            )}
                         </div>
                     </>
                 )}
