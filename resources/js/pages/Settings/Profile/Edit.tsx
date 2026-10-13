@@ -290,11 +290,15 @@ function ApiTokens({ tokens, newToken, mcpUrl }: { tokens: ApiToken[]; newToken:
                             onChange={(e) => form.setData('name', e.target.value)}
                         />
                     </Field>
-                    <Switch
-                        checked={form.data.write}
-                        onChange={(value) => form.setData('write', value)}
-                        label="Write access: agents can resolve, ignore and comment on issues"
-                    />
+                    <div className="flex items-start gap-3">
+                        <Switch checked={form.data.write} onChange={(value) => form.setData('write', value)} label="Write access" />
+                        <div className="text-sm">
+                            <div className="text-zinc-900">Write access</div>
+                            <div className="text-zinc-500">
+                                Agents can resolve, ignore and comment on issues. Without it, the token can only read.
+                            </div>
+                        </div>
+                    </div>
                     <ModalFooter>
                         <Button onClick={() => setCreating(false)}>Cancel</Button>
                         <Button type="submit" variant="primary" loading={form.processing}>
