@@ -54,6 +54,21 @@ Run `php artisan nightwatch:agent` under your process manager (Supervisor, syste
 - **`Incoming token hash mismatch`:** the app and the agent see different `NIGHTWATCH_TOKEN` values. Set it once for both, then restart both.
 - **Requests arrive but jobs don't:** the queue workers run without an agent (see the managed queue note above).
 
+## MCP server for AI agents
+
+Raccoon includes an [MCP](https://modelcontextprotocol.io) server at `/mcp`, so coding agents like Claude Code can query production data while they work in your repo: find the slowest routes, spot N+1 queries, read stack traces, and resolve the issue after the fix.
+
+1. Create a token under **Settings → Profile → API tokens**. A token sees the same organizations you do. Turn on write access only if the agent should resolve, ignore or comment on issues.
+2. Add the server to Claude Code (the token dialog shows this command with your values):
+
+   ```bash
+   claude mcp add --transport http raccoon https://<your Raccoon deployment>/mcp --header "Authorization: Bearer <token>"
+   ```
+
+Tools: `list_environments`, `environment_overview`, `slow_routes`, `get_route`, `get_request`, `slow_jobs`, `get_job_attempt`, `top_queries` (sort by `calls_per_execution` to find N+1 queries), `list_issues`, `get_issue`, `search_logs`, and `update_issue` (write tokens only). Results are Markdown with SQL, `file:line` locations and dashboard links.
+
+Try: *"Use raccoon to find the routes with the most total time this week, check them for N+1 queries, and fix the worst one."*
+
 ## Webhooks
 
 Webhooks are configured per application under **Settings → Issues**. Each delivery is a JSON `POST` of `{id, event, created_at, data}`. Events are `issue.created`, `issue.reopened`, `issue.resolved`, `issue.assigned` and `threshold.exceeded`. Verify it with the `X-Raccoon-Signature` header: `sha256=` followed by the hex HMAC-SHA256 of the raw body, keyed with the webhook's secret.

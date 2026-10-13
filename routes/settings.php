@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\ApiTokenController;
 use App\Http\Controllers\Settings\NotificationPreferenceController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -16,6 +17,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
+
+    Route::post('settings/api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');
+    Route::delete('settings/api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
 
     Route::get('settings/notifications', [NotificationPreferenceController::class, 'edit'])->name('notifications.edit');
     Route::put('settings/notifications/environments/{environment}', [NotificationPreferenceController::class, 'update'])->name('notifications.update');

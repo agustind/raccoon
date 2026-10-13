@@ -35,6 +35,10 @@ Frontend:
 - Shared components in `resources/js/components/rc/`: `charts` (MetricCard, StackedBarChart, DurationLineChart, COLORS), `data-table` (DataTable, RowButton), `pagination`, `period-picker`, `user-filter`, `section` (Panel, Card, SectionHeader, Label, EmptyState), `key-value`, `badges`, `timeline`, `drawer`, `deferred`, `filter-tabs`, `search-input`, `code-block`, `timestamp`, `request-charts`, `execution-details` (deployment row, events summary, exceptions, logs, collapsible for execution pages), `source-link` (link to a parent execution). Helpers: `@/lib/format` (formatDuration takes microseconds), `@/lib/rc` (envUrl, visitWithQuery, withPeriod). Types: `@/types/raccoon`.
 - Example to copy: `resources/js/pages/Requests/{Index,Route,Show}.tsx`.
 
+## MCP server
+
+`routes/ai.php` serves `App\Mcp\Servers\RaccoonServer` at `/mcp` (laravel/mcp), behind `auth:sanctum` personal access tokens created in Settings → Profile (`ApiTokenController`). Tools live in `app/Mcp/Tools/` and extend `RaccoonTool`, which resolves the environment the token's user may see and the period. Tools return Markdown (`App\Mcp\Support\Markdown`); `ExecutionReport` builds request and job attempt reports. Write tools check `$user->tokenCan('write')`. Tests: `tests/Feature/McpServerTest.php`.
+
 ## Deployment
 
 Railway, defined in `.railway/railway.ts` (see `docs/railway.md`). One Docker image runs as `web` (`ROLE=web`) and `worker` (`ROLE=worker`: queue + scheduler). `APP_KEY` is generated on first boot and stored in Postgres when unset (`docker/app-key.php`).

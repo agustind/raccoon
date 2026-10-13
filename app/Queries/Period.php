@@ -50,6 +50,18 @@ class Period
         return new self(array_key_exists($key, self::PRESETS) ? $key : $default, $to->subSeconds($preset['seconds']), $to, $preset['bucket']);
     }
 
+    /**
+     * A preset period ending now: '1h', '24h', '7d', '14d' or '30d'.
+     */
+    public static function preset(string $key): self
+    {
+        $key = array_key_exists($key, self::PRESETS) ? $key : '24h';
+        $preset = self::PRESETS[$key];
+        $to = CarbonImmutable::now('UTC')->startOfSecond();
+
+        return new self($key, $to->subSeconds($preset['seconds']), $to, $preset['bucket']);
+    }
+
     public static function bucketFor(int $seconds): int
     {
         foreach ([60, 300, 900, 1800, 3600, 7200, 14400, 28800, 86400] as $bucket) {

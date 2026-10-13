@@ -1,11 +1,33 @@
-import { Button, Field, Modal, ModalFooter, SettingsCard, SettingsRow, SettingsRows, TextInput } from '@/components/rc/settings-ui';
+import {
+    Button,
+    ConfirmDialog,
+    CopyButton,
+    Field,
+    Modal,
+    ModalFooter,
+    SettingsCard,
+    SettingsEmpty,
+    SettingsRow,
+    SettingsRows,
+    Switch,
+    TextInput,
+} from '@/components/rc/settings-ui';
 import SettingsLayout from '@/layouts/settings-layout';
+import { timeAgo } from '@/lib/format';
 import type { PageProps } from '@/types/raccoon';
-import { useForm, usePage } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
+interface ApiToken {
+    id: number;
+    name: string;
+    write: boolean;
+    last_used_at: string | null;
+    created_at: string;
+}
+
 export default function Edit() {
-    const { auth } = usePage<PageProps>().props;
+    const { auth, tokens, newToken, mcpUrl } = usePage<PageProps & { tokens: ApiToken[]; newToken: string | null; mcpUrl: string }>().props;
     const user = auth.user!;
     const name = useForm({ name: user.name });
     const email = useForm({ email: user.email, password: '' });
@@ -65,6 +87,8 @@ export default function Edit() {
                     </SettingsRow>
                 </SettingsRows>
             </SettingsCard>
+
+            <ApiTokens tokens={tokens} newToken={newToken} mcpUrl={mcpUrl} />
 
             <SettingsCard title="Danger Zone">
                 <SettingsRows>
@@ -189,5 +213,134 @@ export default function Edit() {
                 </form>
             </Modal>
         </SettingsLayout>
+    );
+}
+
+/** Personal tokens for the MCP server, so AI agents can query this app's data. */
+function ApiTokens({ tokens, newToken, mcpUrl }: { tokens: ApiToken[]; newToken: string | null; mcpUrl: string }) {
+    const form = useForm({ name: '', write: false });
+    const [creating, setCreating] = useState(false);
+    const [shownToken, setShownToken] = useState<string | null>(null);
+    const [revoking, setRevoking] = useState<ApiToken | null>(null);
+    const command = shownToken ? `claude mcp add --transport http raccoon ${mcpUrl} --header "Authorization: Bearer ${shownToken}"` : '';
+
+    const create = () =>
+        form.post('/settings/api-tokens', {
+            preserveScroll: true,
+            onSuccess: (page) => {
+                setCreating(false);
+                form.reset();
+                setShownToken((page.props as { newToken?: string | null }).newToken ?? newToken);
+            },
+        });
+
+    return (
+        <>
+            <SettingsCard
+                title="API tokens"
+                description={
+                    <>
+                        Let AI agents such as Claude Code query this data through the MCP server at{' '}
+                        <code className="font-mono text-xs">{mcpUrl}</code>. A token sees the same organizations you do.
+                    </>
+                }
+                onAdd={() => setCreating(true)}
+                addLabel="New token"
+            >
+                {tokens.length === 0 ? (
+                    <SettingsEmpty message="No tokens yet." label="Create a token" onClick={() => setCreating(true)} />
+                ) : (
+                    <SettingsRows>
+                        {tokens.map((token) => (
+                            <SettingsRow
+                                key={token.id}
+                                title={
+                                    <span className="flex items-center gap-2">
+                                        {token.name}
+                                        <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-[11px] text-zinc-600 uppercase">
+                                            {token.write ? 'read + write' : 'read'}
+                                        </span>
+                                    </span>
+                                }
+                                description={`Created ${timeAgo(token.created_at)} · ${token.last_used_at ? `last used ${timeAgo(token.last_used_at)}` : 'never used'}`}
+                            >
+                                <Button size="sm" onClick={() => setRevoking(token)}>
+                                    Revoke
+                                </Button>
+                            </SettingsRow>
+                        ))}
+                    </SettingsRows>
+                )}
+            </SettingsCard>
+
+            <Modal open={creating} onOpenChange={(open) => !open && setCreating(false)} title="New API token">
+                <form
+                    className="space-y-4"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        create();
+                    }}
+                >
+                    <Field label="Name" error={form.errors.name} htmlFor="token-name">
+                        <TextInput
+                            id="token-name"
+                            autoFocus
+                            placeholder="Claude Code on my laptop"
+                            value={form.data.name}
+                            onChange={(e) => form.setData('name', e.target.value)}
+                        />
+                    </Field>
+                    <Switch
+                        checked={form.data.write}
+                        onChange={(value) => form.setData('write', value)}
+                        label="Write access: agents can resolve, ignore and comment on issues"
+                    />
+                    <ModalFooter>
+                        <Button onClick={() => setCreating(false)}>Cancel</Button>
+                        <Button type="submit" variant="primary" loading={form.processing}>
+                            Create token
+                        </Button>
+                    </ModalFooter>
+                </form>
+            </Modal>
+
+            <Modal
+                open={shownToken !== null}
+                onOpenChange={(open) => !open && setShownToken(null)}
+                title="Your new token"
+                description="Copy it now. It won't be shown again."
+            >
+                <div className="min-w-0 space-y-4 text-sm">
+                    <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
+                        <code className="min-w-0 flex-1 overflow-x-auto font-mono text-xs whitespace-nowrap">{shownToken}</code>
+                        <CopyButton value={shownToken ?? ''} />
+                    </div>
+                    <div>
+                        <p className="mb-2 text-zinc-600">Add it to Claude Code:</p>
+                        <div className="flex items-start gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
+                            <code className="min-w-0 flex-1 overflow-x-auto font-mono text-xs whitespace-nowrap">{command}</code>
+                            <CopyButton value={command} />
+                        </div>
+                    </div>
+                    <ModalFooter>
+                        <Button variant="primary" onClick={() => setShownToken(null)}>
+                            Done
+                        </Button>
+                    </ModalFooter>
+                </div>
+            </Modal>
+
+            <ConfirmDialog
+                open={revoking !== null}
+                onOpenChange={(open) => !open && setRevoking(null)}
+                title={`Revoke "${revoking?.name}"?`}
+                description="Agents using this token lose access immediately."
+                confirmLabel="Revoke"
+                destructive
+                onConfirm={() =>
+                    revoking && router.delete(`/settings/api-tokens/${revoking.id}`, { preserveScroll: true, onSuccess: () => setRevoking(null) })
+                }
+            />
+        </>
     );
 }

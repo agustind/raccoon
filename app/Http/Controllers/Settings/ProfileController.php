@@ -18,6 +18,15 @@ class ProfileController extends Controller
     {
         return Inertia::render('Settings/Profile/Edit', [
             'status' => $request->session()->get('status'),
+            'mcpUrl' => url('/mcp'),
+            'newToken' => $request->session()->get('api_token'),
+            'tokens' => $request->user()->tokens()->latest()->get()->map(fn ($token) => [
+                'id' => $token->id,
+                'name' => $token->name,
+                'write' => in_array('write', $token->abilities, true),
+                'last_used_at' => $token->last_used_at?->toIso8601String(),
+                'created_at' => $token->created_at->toIso8601String(),
+            ]),
         ]);
     }
 
