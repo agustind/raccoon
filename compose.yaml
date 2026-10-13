@@ -1,0 +1,23 @@
+services:
+  pgsql:
+    image: postgres:17
+    ports: ["5544:5432"]
+    environment:
+      POSTGRES_DB: raccoon
+      POSTGRES_USER: raccoon
+      POSTGRES_PASSWORD: secret
+    volumes: [pgsql:/var/lib/postgresql/data]
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.8
+    ports: ["8123:8123"]
+    environment:
+      CLICKHOUSE_DB: raccoon
+      CLICKHOUSE_USER: raccoon
+      CLICKHOUSE_PASSWORD: secret
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ulimits:
+      nofile: { soft: 262144, hard: 262144 }
+    volumes: [clickhouse:/var/lib/clickhouse]
+volumes:
+  pgsql:
+  clickhouse:

@@ -1,0 +1,4 @@
+<!-- Railway private networking is IPv6. -->
+<clickhouse>
+    <listen_host>::</listen_host>
+</clickhouse>
