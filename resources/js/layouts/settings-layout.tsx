@@ -1,3 +1,4 @@
+import { Label } from '@/components/rc/section';
 import { Initial } from '@/components/rc/settings-ui';
 import {
     DropdownMenu,
@@ -67,6 +68,15 @@ function NavLink({ href, icon: Icon, children, active }: { href: string; icon?: 
     );
 }
 
+/** Names a sidebar group, since an organization and its application can share a name. */
+function GroupLabel({ className, children }: { className?: string; children: ReactNode }) {
+    return (
+        <div className={cn('px-3 pb-1', className)}>
+            <Label>{children}</Label>
+        </div>
+    );
+}
+
 function SettingsSidebar() {
     const { auth } = usePage<PageProps>().props;
     const path = usePage().url.split('?')[0];
@@ -81,10 +91,7 @@ function SettingsSidebar() {
             </Link>
 
             <nav className="flex-1 space-y-1 overflow-y-auto pt-2">
-                <div className="flex h-9 items-center gap-3 px-3 text-sm text-zinc-900">
-                    <Initial name={auth.user?.name ?? '?'} className="size-5 border-0 bg-transparent" />
-                    <span className="truncate">{auth.user?.name}</span>
-                </div>
+                <GroupLabel>Account</GroupLabel>
                 <NavLink href="/settings/profile" icon={User} active={path === '/settings/profile'}>
                     Profile
                 </NavLink>
@@ -94,7 +101,8 @@ function SettingsSidebar() {
 
                 {org && orgBase && (
                     <>
-                        <div className="pt-6">
+                        <GroupLabel className="pt-6">Organization</GroupLabel>
+                        <div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex h-9 items-center gap-2 rounded-lg px-3 text-sm text-zinc-900 hover:bg-zinc-200/50">
                                     <Initial name={org.name} className="size-5 border-0 bg-transparent" />
@@ -129,7 +137,8 @@ function SettingsSidebar() {
                             </NavLink>
                         )}
 
-                        <div className="space-y-1 pt-6">
+                        {org.applications.length > 0 && <GroupLabel className="pt-6">Applications</GroupLabel>}
+                        <div className="space-y-1">
                             {org.applications.map((application) => {
                                 const href = `${orgBase}/applications/${application.id}/general`;
 
