@@ -173,12 +173,12 @@
  * border-zinc-200...), so instead of a dark: variant on every class the
  * palette itself flips: grays invert end to end, accent tints (50-300) swap
  * with their deep shades (950-700), and white becomes the card surface.
+ * Black stays black: it only backs modal overlays.
  * Mid accents (400-600) stay, so status colors and buttons keep their meaning.
  * Generated from node_modules/tailwindcss/theme.css.
  */
 .dark {
     --color-white: oklch(0.21 0.006 285.885);
-    --color-black: oklch(0.985 0 0);
     --color-rc-page: oklch(0.141 0.005 285.823);
     --color-zinc-50: oklch(0.141 0.005 285.823);
     --color-zinc-100: oklch(0.21 0.006 285.885);

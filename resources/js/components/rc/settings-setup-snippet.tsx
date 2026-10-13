@@ -13,7 +13,7 @@ export default function SettingsSetupSnippet({ token, baseUrl, className }: { to
     const masked = `NIGHTWATCH_TOKEN=${revealed ? token : `${token.slice(0, 6)}${'•'.repeat(24)}`}\nNIGHTWATCH_BASE_URL=${baseUrl}`;
 
     return (
-        <ol className={cn('space-y-4 text-sm text-zinc-700', className)}>
+        <ol className={cn('min-w-0 space-y-4 text-sm text-zinc-700', className)}>
             <Step number={1} title="Install the agent package">
                 <Snippet text="composer require laravel/nightwatch" />
             </Step>
