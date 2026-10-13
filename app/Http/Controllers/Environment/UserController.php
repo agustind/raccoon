@@ -44,8 +44,14 @@ class UserController extends EnvironmentController
         $period = $this->period($request);
         $bindings = $this->bindings($environment, $period, ['user' => $user]);
         $details = $this->users($environment, [$user])[$user] ?? null;
+        // A user can appear only in exceptions or job attempts (e.g. errors
+        // raised inside queued jobs) without a request or a user record.
         $lastSeen = $this->clickhouse->value(
-            "SELECT formatDateTime(max(timestamp), '%Y-%m-%d %H:%i:%S') FROM requests WHERE environment_id = {environment:UUID} AND user = {user:String} HAVING count() > 0",
+            "SELECT formatDateTime(max(ts), '%Y-%m-%d %H:%i:%S') FROM (
+                SELECT max(timestamp) AS ts FROM requests WHERE environment_id = {environment:UUID} AND user = {user:String} HAVING count() > 0
+                UNION ALL SELECT max(timestamp) FROM exceptions WHERE environment_id = {environment:UUID} AND user = {user:String} HAVING count() > 0
+                UNION ALL SELECT max(timestamp) FROM job_attempts WHERE environment_id = {environment:UUID} AND user = {user:String} HAVING count() > 0
+            ) HAVING count() > 0",
             $bindings,
         );
 
