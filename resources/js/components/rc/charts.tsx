@@ -2,7 +2,20 @@ import { formatCompact, formatDate, formatDuration, parseTimestamp } from '@/lib
 import { cn } from '@/lib/utils';
 import type { DeploymentBucket, GraphPoint } from '@/types/raccoon';
 import { ReactNode, useMemo } from 'react';
-import { Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, ReferenceDot, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+    Area,
+    Bar,
+    BarChart,
+    CartesianGrid,
+    ComposedChart,
+    Line,
+    ReferenceDot,
+    ReferenceLine,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from 'recharts';
 import { Card, Label } from './section';
 
 // CSS variables so charts follow the light/dark palette (see app.css).
@@ -98,7 +111,17 @@ function DeployMarker(props: { cx?: number; cy?: number }) {
     return <path d={`M${cx - 3.5},${cy + 8} L${cx + 3.5},${cy + 8} L${cx},${cy + 3} Z`} fill="var(--color-zinc-500)" />;
 }
 
-function ChartTooltip({ active, payload, label, series }: { active?: boolean; payload?: { dataKey: string; value: number | null }[]; label?: string; series: Series[] }) {
+function ChartTooltip({
+    active,
+    payload,
+    label,
+    series,
+}: {
+    active?: boolean;
+    payload?: { dataKey: string; value: number | null }[];
+    label?: string;
+    series: Series[];
+}) {
     if (!active || !payload?.length || !label) return null;
 
     return (
@@ -138,7 +161,14 @@ export function StackedBarChart({ data, series, deployments }: { data: GraphPoin
                 <YAxis {...axisProps.yAxis} />
                 <Tooltip cursor={{ fill: GRID }} content={<ChartTooltip series={series} />} isAnimationActive={false} />
                 {series.map((s, index) => (
-                    <Bar key={s.key} dataKey={s.key} stackId="a" fill={s.color} isAnimationActive={false} radius={index === series.length - 1 ? [1, 1, 0, 0] : 0} />
+                    <Bar
+                        key={s.key}
+                        dataKey={s.key}
+                        stackId="a"
+                        fill={s.color}
+                        isAnimationActive={false}
+                        radius={index === series.length - 1 ? [1, 1, 0, 0] : 0}
+                    />
                 ))}
                 {[...deploys].map((bucket) => (
                     <ReferenceDot key={bucket} x={bucket} y={0} r={0} shape={<DeployMarker />} ifOverflow="visible" />
@@ -172,7 +202,15 @@ export function DurationLineChart({
                 {thresholdMs ? <ReferenceLine y={thresholdMs * 1000} stroke={COLORS.threshold} strokeDasharray="4 4" /> : null}
                 {/* Soft fill under the slowest series, a p95 band. */}
                 {series.length > 1 && (
-                    <Area dataKey={series[series.length - 1].key} stroke="none" fill={series[series.length - 1].color} fillOpacity={0.06} connectNulls={false} isAnimationActive={false} type="linear" />
+                    <Area
+                        dataKey={series[series.length - 1].key}
+                        stroke="none"
+                        fill={series[series.length - 1].color}
+                        fillOpacity={0.06}
+                        connectNulls={false}
+                        isAnimationActive={false}
+                        type="linear"
+                    />
                 )}
                 {[...series].reverse().map((s) => (
                     <Line
@@ -180,7 +218,9 @@ export function DurationLineChart({
                         dataKey={s.key}
                         stroke={s.color}
                         strokeWidth={1.5}
-                        dot={({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) => <IsolatedDot key={`dot-${s.key}-${index}`} cx={cx} cy={cy} index={index} data={data} dataKey={s.key} color={s.color} />}
+                        dot={({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) => (
+                            <IsolatedDot key={`dot-${s.key}-${index}`} cx={cx} cy={cy} index={index} data={data} dataKey={s.key} color={s.color} />
+                        )}
                         activeDot={{ r: 3 }}
                         connectNulls={false}
                         isAnimationActive={false}
@@ -199,7 +239,21 @@ export function DurationLineChart({
  * A point with no neighbours draws no line segment, so render it as a dot.
  * Every other point renders nothing.
  */
-function IsolatedDot({ cx, cy, index, data, dataKey, color }: { cx?: number; cy?: number; index?: number; data: GraphPoint[]; dataKey: string; color: string }) {
+function IsolatedDot({
+    cx,
+    cy,
+    index,
+    data,
+    dataKey,
+    color,
+}: {
+    cx?: number;
+    cy?: number;
+    index?: number;
+    data: GraphPoint[];
+    dataKey: string;
+    color: string;
+}) {
     const present = (i: number) => data[i] !== undefined && data[i][dataKey] !== null && data[i][dataKey] !== undefined;
 
     if (index === undefined || cx === undefined || cy === undefined || !present(index) || present(index - 1) || present(index + 1)) {

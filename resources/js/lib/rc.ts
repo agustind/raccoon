@@ -29,7 +29,10 @@ export function toQueryString(query: Record<string, string | number | null | und
  * Merge params into the current query string and visit the same page.
  * Pass null to remove a param. Resets pagination unless `page`/`cursor` is set.
  */
-export function visitWithQuery(params: Record<string, string | number | null | undefined>, options: { preserveScroll?: boolean; only?: string[] } = {}): void {
+export function visitWithQuery(
+    params: Record<string, string | number | null | undefined>,
+    options: { preserveScroll?: boolean; only?: string[] } = {},
+): void {
     const query: Record<string, string | number | null | undefined> = { ...currentQuery() };
 
     if (!('page' in params)) delete query.page;
@@ -37,11 +40,15 @@ export function visitWithQuery(params: Record<string, string | number | null | u
 
     Object.assign(query, params);
 
-    router.get(window.location.pathname + toQueryString(query), {}, {
-        preserveState: true,
-        preserveScroll: options.preserveScroll ?? true,
-        only: options.only,
-    });
+    router.get(
+        window.location.pathname + toQueryString(query),
+        {},
+        {
+            preserveState: true,
+            preserveScroll: options.preserveScroll ?? true,
+            only: options.only,
+        },
+    );
 }
 
 /** Keep the period/user filter when linking from one page to another. */

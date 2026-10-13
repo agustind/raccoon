@@ -31,7 +31,17 @@ export function PrioritySymbol({ priority, className }: { priority: number; clas
     );
 }
 
-export function PriorityPicker({ value, onChange, showLabel = true, className }: { value: number; onChange: (priority: number) => void; showLabel?: boolean; className?: string }) {
+export function PriorityPicker({
+    value,
+    onChange,
+    showLabel = true,
+    className,
+}: {
+    value: number;
+    onChange: (priority: number) => void;
+    showLabel?: boolean;
+    className?: string;
+}) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className={cn('flex items-center gap-2 text-sm', className)} title={PRIORITIES[value]?.label}>
@@ -63,7 +73,12 @@ export function Avatar({ user, className }: { user: { name: string; avatar_url?:
     }
 
     return (
-        <span className={cn('inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-[10px] font-medium text-zinc-700 uppercase', className)}>
+        <span
+            className={cn(
+                'inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-[10px] font-medium text-zinc-700 uppercase',
+                className,
+            )}
+        >
             {user.name.slice(0, 1)}
         </span>
     );
@@ -126,7 +141,9 @@ export function AssigneePicker({
                         <Check className={cn('size-4', user.id === value ? 'opacity-100' : 'opacity-0')} />
                     </DropdownMenuItem>
                 ))}
-                {sorted.length === 0 && !'unassigned'.includes(query.toLowerCase()) && <div className="px-2 py-1.5 text-sm text-zinc-500">No users found</div>}
+                {sorted.length === 0 && !'unassigned'.includes(query.toLowerCase()) && (
+                    <div className="px-2 py-1.5 text-sm text-zinc-500">No users found</div>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );

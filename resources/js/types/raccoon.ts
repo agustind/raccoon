@@ -156,7 +156,10 @@ export interface Execution {
     stages: Stage[];
 }
 
-export type EventSummary = Record<'queries' | 'mail' | 'notifications' | 'outgoing_requests' | 'queued_jobs' | 'cache_events', { count: number; duration: number }>;
+export type EventSummary = Record<
+    'queries' | 'mail' | 'notifications' | 'outgoing_requests' | 'queued_jobs' | 'cache_events',
+    { count: number; duration: number }
+>;
 
 export interface ExceptionRow {
     timestamp: string;

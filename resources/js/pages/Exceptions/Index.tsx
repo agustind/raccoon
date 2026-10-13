@@ -56,7 +56,9 @@ export default function ExceptionsIndex(props: Props) {
         >
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <OccurrencesChart graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />}
+                    {() => (
+                        <OccurrencesChart graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />
+                    )}
                 </Deferred>
             </Panel>
 
@@ -101,21 +103,34 @@ export default function ExceptionsIndex(props: Props) {
                                     label: 'Exception',
                                     render: (row) => (
                                         <span className="flex min-w-0 items-center gap-3">
-                                            {!row.handled && <span className="shrink-0 rounded bg-rose-600 px-1.5 py-0.5 text-xs text-white uppercase">Unhandled</span>}
+                                            {!row.handled && (
+                                                <span className="shrink-0 rounded bg-rose-600 px-1.5 py-0.5 text-xs text-white uppercase">
+                                                    Unhandled
+                                                </span>
+                                            )}
                                             <span className="shrink-0 text-zinc-800">{row.class}</span>
                                             {row.code !== '0' && <span className="shrink-0 text-orange-500">[{row.code}]</span>}
                                             {row.message && <span className="truncate text-zinc-500">{row.message}</span>}
                                         </span>
                                     ),
                                 },
-                                { key: 'count', label: 'Count', width: '64px', align: 'right', sortable: true, render: (row) => <span title={formatNumber(row.count)}>{formatCompact(row.count)}</span> },
+                                {
+                                    key: 'count',
+                                    label: 'Count',
+                                    width: '64px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <span title={formatNumber(row.count)}>{formatCompact(row.count)}</span>,
+                                },
                                 {
                                     key: 'impacted_users',
                                     label: 'Users',
                                     width: '64px',
                                     align: 'right',
                                     sortable: true,
-                                    render: (row) => <span title={`${formatNumber(row.impacted_users)} users`}>{formatCompact(row.impacted_users)}</span>,
+                                    render: (row) => (
+                                        <span title={`${formatNumber(row.impacted_users)} users`}>{formatCompact(row.impacted_users)}</span>
+                                    ),
                                 },
                             ]}
                         />
@@ -126,4 +141,3 @@ export default function ExceptionsIndex(props: Props) {
         </EnvironmentLayout>
     );
 }
-

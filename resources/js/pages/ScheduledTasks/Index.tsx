@@ -111,7 +111,10 @@ export default function ScheduledTasksIndex(props: Props) {
                                             <span className="truncate">{row.name}</span>
                                             <span
                                                 title={`Last run: ${row.last_status}`}
-                                                className={cn('inline-block size-1.5 shrink-0 rounded-full', LAST_STATUS_DOT[row.last_status] ?? 'bg-zinc-300')}
+                                                className={cn(
+                                                    'inline-block size-1.5 shrink-0 rounded-full',
+                                                    LAST_STATUS_DOT[row.last_status] ?? 'bg-zinc-300',
+                                                )}
                                             />
                                         </span>
                                     ),
@@ -122,17 +125,64 @@ export default function ScheduledTasksIndex(props: Props) {
                                     width: '200px',
                                     render: (row) => (
                                         <span className="relative z-10">
-                                            <CronForHumans cron={row.cron} repeatSeconds={row.repeat_seconds} timezone={row.timezone} className="max-w-48" />
+                                            <CronForHumans
+                                                cron={row.cron}
+                                                repeatSeconds={row.repeat_seconds}
+                                                timezone={row.timezone}
+                                                className="max-w-48"
+                                            />
                                         </span>
                                     ),
                                 },
                                 { key: 'next', label: 'Next run', width: '100px', render: (row) => <CronCountdown nextRuns={row.next_runs} /> },
-                                { key: 'processed', label: 'Processed', width: '90px', align: 'right', sortable: true, render: (row) => <CountLink href={taskUrl(row.group, '?status=processed')} value={row.processed} /> },
-                                { key: 'skipped', label: 'Skipped', width: '80px', align: 'right', sortable: true, render: (row) => <CountLink href={taskUrl(row.group, '?status=skipped')} value={row.skipped} tone="warning" /> },
-                                { key: 'failed', label: 'Failed', width: '70px', align: 'right', sortable: true, render: (row) => <CountLink href={taskUrl(row.group, '?status=failed')} value={row.failed} tone="danger" /> },
-                                { key: 'total', label: 'Total', width: '64px', align: 'right', sortable: true, render: (row) => formatCompact(row.count) },
-                                { key: 'avg', label: 'Avg', width: '90px', align: 'right', sortable: true, render: (row) => <DurationValue value={row.avg} thresholdMs={row.threshold} /> },
-                                { key: 'p95', label: 'P95', width: '90px', align: 'right', sortable: true, render: (row) => <DurationValue value={row.p95} thresholdMs={row.threshold} /> },
+                                {
+                                    key: 'processed',
+                                    label: 'Processed',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <CountLink href={taskUrl(row.group, '?status=processed')} value={row.processed} />,
+                                },
+                                {
+                                    key: 'skipped',
+                                    label: 'Skipped',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <CountLink href={taskUrl(row.group, '?status=skipped')} value={row.skipped} tone="warning" />,
+                                },
+                                {
+                                    key: 'failed',
+                                    label: 'Failed',
+                                    width: '70px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <CountLink href={taskUrl(row.group, '?status=failed')} value={row.failed} tone="danger" />,
+                                },
+                                {
+                                    key: 'total',
+                                    label: 'Total',
+                                    width: '64px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.count),
+                                },
+                                {
+                                    key: 'avg',
+                                    label: 'Avg',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <DurationValue value={row.avg} thresholdMs={row.threshold} />,
+                                },
+                                {
+                                    key: 'p95',
+                                    label: 'P95',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <DurationValue value={row.p95} thresholdMs={row.threshold} />,
+                                },
                             ]}
                         />
                     </>

@@ -34,7 +34,11 @@ function describeTime(minute: string, hour: string): string {
 
     if (minute === '*' && hour === '*') return 'Every minute';
     if (step(minute) && hour === '*') return `Every ${step(minute)} minutes`;
-    if (isNumber(minute) && /^\d+(,\d+)*$/.test(hour)) return `At ${hour.split(',').map((h) => clock(Number(h), Number(minute))).join(' and ')}`;
+    if (isNumber(minute) && /^\d+(,\d+)*$/.test(hour))
+        return `At ${hour
+            .split(',')
+            .map((h) => clock(Number(h), Number(minute)))
+            .join(' and ')}`;
 
     const pastHour = isNumber(minute) ? (Number(minute) === 0 ? null : `At ${minute.padStart(2, '0')} minutes past the hour`) : null;
 
@@ -68,7 +72,17 @@ function clock(hour: number, minute: number): string {
 }
 
 /** Human cron description with the raw expression and timezone in a tooltip. */
-export function CronForHumans({ cron, repeatSeconds, timezone, className }: { cron: string; repeatSeconds: number; timezone: string; className?: string }) {
+export function CronForHumans({
+    cron,
+    repeatSeconds,
+    timezone,
+    className,
+}: {
+    cron: string;
+    repeatSeconds: number;
+    timezone: string;
+    className?: string;
+}) {
     const description = describeCron(cron, repeatSeconds);
 
     return (
@@ -101,7 +115,11 @@ export function CronCountdown({ nextRuns, className }: { nextRuns: string[]; cla
 
     const next = nextRuns.map((run) => new Date(run).getTime()).find((time) => time > now);
 
-    return <span className={cn('whitespace-nowrap', className)}>{next === undefined ? (nextRuns.length ? 'Now' : 'Unknown') : formatCountdown(next - now)}</span>;
+    return (
+        <span className={cn('whitespace-nowrap', className)}>
+            {next === undefined ? (nextRuns.length ? 'Now' : 'Unknown') : formatCountdown(next - now)}
+        </span>
+    );
 }
 
 function formatCountdown(ms: number): string {

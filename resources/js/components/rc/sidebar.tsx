@@ -1,4 +1,12 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { type Appearance, useAppearance } from '@/hooks/use-appearance';
 import { envUrl, withPeriod } from '@/lib/rc';
 import { cn } from '@/lib/utils';
@@ -21,11 +29,11 @@ import {
     Mail,
     Monitor,
     Moon,
-    Sun,
     MoreHorizontal,
     Plus,
     ScrollText,
     Settings2,
+    Sun,
     TriangleAlert,
     User,
 } from 'lucide-react';
@@ -51,7 +59,12 @@ export const ENV_COLORS: Record<string, string> = {
 
 export function Avatar({ name, className }: { name: string; className?: string }) {
     return (
-        <span className={cn('flex size-7 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700', className)}>
+        <span
+            className={cn(
+                'flex size-7 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700',
+                className,
+            )}
+        >
             {name.charAt(0).toUpperCase()}
         </span>
     );
@@ -79,7 +92,11 @@ export default function Sidebar() {
     // Application settings for the current app, else the organization's first
     // app, else the organization itself.
     const settingsApp = app ?? auth.user?.organizations.find((o) => o.id === auth.org?.id)?.applications[0] ?? null;
-    const settingsUrl = auth.org ? (settingsApp ? `/settings/organizations/${auth.org.id}/applications/${settingsApp.id}/general` : `/settings/organizations/${auth.org.id}`) : null;
+    const settingsUrl = auth.org
+        ? settingsApp
+            ? `/settings/organizations/${auth.org.id}/applications/${settingsApp.id}/general`
+            : `/settings/organizations/${auth.org.id}`
+        : null;
 
     const monitoring: NavItem[] = [
         { title: 'Users', path: 'users', icon: User, keepPeriod: true },

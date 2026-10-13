@@ -50,7 +50,9 @@ export default function OutgoingRequestsIndex(props: Props) {
         <EnvironmentLayout title="Outgoing Requests" actions={<PeriodPicker period={props.period} />}>
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <RequestCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />}
+                    {() => (
+                        <RequestCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />
+                    )}
                 </Deferred>
             </Panel>
 
@@ -86,10 +88,38 @@ export default function OutgoingRequestsIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: '2xx', label: '1/2/3XX', width: '80px', align: 'right', sortable: true, render: (row) => statusLink(row, '2xx', formatCompact(row['2xx'])) },
-                                { key: '4xx', label: '4XX', width: '64px', align: 'right', sortable: true, render: (row) => statusLink(row, '4xx', <AlertCount value={row['4xx']} tone="warning" />) },
-                                { key: '5xx', label: '5XX', width: '64px', align: 'right', sortable: true, render: (row) => statusLink(row, '5xx', <AlertCount value={row['5xx']} tone="danger" />) },
-                                { key: 'count', label: 'Total', width: '70px', align: 'right', sortable: true, render: (row) => formatCompact(row.count) },
+                                {
+                                    key: '2xx',
+                                    label: '1/2/3XX',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => statusLink(row, '2xx', formatCompact(row['2xx'])),
+                                },
+                                {
+                                    key: '4xx',
+                                    label: '4XX',
+                                    width: '64px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => statusLink(row, '4xx', <AlertCount value={row['4xx']} tone="warning" />),
+                                },
+                                {
+                                    key: '5xx',
+                                    label: '5XX',
+                                    width: '64px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => statusLink(row, '5xx', <AlertCount value={row['5xx']} tone="danger" />),
+                                },
+                                {
+                                    key: 'count',
+                                    label: 'Total',
+                                    width: '70px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.count),
+                                },
                                 { key: 'avg', label: 'Avg', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.avg) },
                                 { key: 'p95', label: 'P95', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.p95) },
                             ]}

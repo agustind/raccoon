@@ -6,7 +6,10 @@ const UNITS: Record<string, string> = { second: 's', minute: 'm', hour: 'h', day
 export default function ShortTimeAgo({ value, className }: { value: string | null | undefined; className?: string }) {
     if (!value) return <span className={className}>—</span>;
 
-    const text = timeAgo(value).replace(/^(\d+) (second|minute|hour|day|month|year)s? ago$/, (_, amount: string, unit: string) => `${amount}${UNITS[unit]} ago`);
+    const text = timeAgo(value).replace(
+        /^(\d+) (second|minute|hour|day|month|year)s? ago$/,
+        (_, amount: string, unit: string) => `${amount}${UNITS[unit]} ago`,
+    );
 
     return (
         <span className={className} title={`${formatDate(value)} UTC`}>

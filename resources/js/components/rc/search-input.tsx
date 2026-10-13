@@ -22,7 +22,12 @@ export default function SearchInput({ value, placeholder, param = 'search' }: { 
     return (
         <label className="flex h-9 w-56 items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 text-sm shadow-xs focus-within:border-zinc-400">
             <Search className="size-4 text-zinc-400" />
-            <input value={text} onChange={(e) => setText(e.target.value)} placeholder={placeholder} className="w-full bg-transparent outline-none placeholder:text-zinc-400" />
+            <input
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder={placeholder}
+                className="w-full bg-transparent outline-none placeholder:text-zinc-400"
+            />
         </label>
     );
 }

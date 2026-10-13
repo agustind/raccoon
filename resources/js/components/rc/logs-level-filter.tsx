@@ -43,7 +43,11 @@ export default function LevelFilter({ active }: { active: string[] }) {
                 <ul>
                     {LOG_LEVELS.map((level) => (
                         <li key={level}>
-                            <button type="button" onClick={() => toggle(level)} className="flex w-full items-center justify-between rounded-md px-3 py-1.5 text-sm capitalize hover:bg-zinc-100">
+                            <button
+                                type="button"
+                                onClick={() => toggle(level)}
+                                className="flex w-full items-center justify-between rounded-md px-3 py-1.5 text-sm capitalize hover:bg-zinc-100"
+                            >
                                 {level}
                                 <Check className={cn('size-4', selected.includes(level) ? 'opacity-100' : 'opacity-0')} />
                             </button>
@@ -51,7 +55,11 @@ export default function LevelFilter({ active }: { active: string[] }) {
                     ))}
                 </ul>
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                    <button type="button" onClick={() => apply([])} className="rounded-md border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50">
+                    <button
+                        type="button"
+                        onClick={() => apply([])}
+                        className="rounded-md border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50"
+                    >
                         Clear
                     </button>
                     <button type="button" onClick={() => apply(selected)} className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm text-white">

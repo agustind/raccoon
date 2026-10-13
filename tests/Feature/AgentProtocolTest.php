@@ -11,6 +11,7 @@ use App\Models\Organization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 /**
@@ -140,7 +141,7 @@ class AgentProtocolTest extends TestCase
     /**
      * @param  list<array<string, mixed>>  $records
      */
-    private function ingest(array $records): \Illuminate\Testing\TestResponse
+    private function ingest(array $records): TestResponse
     {
         return $this->call('POST', '/api/ingest', server: [
             'HTTP_AUTHORIZATION' => 'Bearer '.$this->ingestToken(),

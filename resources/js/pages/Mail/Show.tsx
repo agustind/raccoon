@@ -5,10 +5,10 @@ import FilterTabs from '@/components/rc/filter-tabs';
 import { MessageCharts, type MessageStats } from '@/components/rc/mail-charts';
 import type { SendRow } from '@/components/rc/mail-details-drawer';
 import Recipients, { type MailCounts } from '@/components/rc/mail-recipients';
-import SourceLink from '@/components/rc/source-link';
 import { CursorPagination } from '@/components/rc/pagination';
 import PeriodPicker from '@/components/rc/period-picker';
 import { Panel, SectionHeader } from '@/components/rc/section';
+import SourceLink from '@/components/rc/source-link';
 import Timestamp from '@/components/rc/timestamp';
 import UserFilter from '@/components/rc/user-filter';
 import EnvironmentLayout from '@/layouts/environment-layout';
@@ -54,7 +54,16 @@ export default function MailShow(props: Props) {
         >
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <MessageCharts label="Mails" graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />}
+                    {() => (
+                        <MessageCharts
+                            label="Mails"
+                            graph={props.graph!}
+                            stats={props.stats!}
+                            deployments={props.deployments}
+                            from={props.from}
+                            to={props.to}
+                        />
+                    )}
                 </Deferred>
             </Panel>
 
@@ -94,7 +103,13 @@ export default function MailShow(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'recipients', label: 'Recipients', width: '110px', align: 'right', render: (row) => <Recipients values={row} /> },
+                                {
+                                    key: 'recipients',
+                                    label: 'Recipients',
+                                    width: '110px',
+                                    align: 'right',
+                                    render: (row) => <Recipients values={row} />,
+                                },
                                 { key: 'duration', label: 'Duration', width: '90px', align: 'right', render: (row) => formatDuration(row.duration) },
                             ]}
                         />

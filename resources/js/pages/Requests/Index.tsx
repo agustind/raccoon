@@ -1,18 +1,18 @@
 import { AlertCount, MethodBadge } from '@/components/rc/badges';
 import DataTable, { RowButton } from '@/components/rc/data-table';
 import Deferred from '@/components/rc/deferred';
-import { RequestCharts } from '@/components/rc/request-charts';
 import Drawer from '@/components/rc/drawer';
 import { KeyValue } from '@/components/rc/key-value';
 import { Pagination } from '@/components/rc/pagination';
 import PeriodPicker from '@/components/rc/period-picker';
+import type { RequestStats } from '@/components/rc/request-charts';
+import { RequestCharts } from '@/components/rc/request-charts';
 import SearchInput from '@/components/rc/search-input';
 import { Panel, SectionHeader } from '@/components/rc/section';
 import UserFilter from '@/components/rc/user-filter';
 import EnvironmentLayout from '@/layouts/environment-layout';
 import { formatCompact, formatDuration, formatNumber } from '@/lib/format';
 import { envUrl, withPeriod } from '@/lib/rc';
-import type { RequestStats } from '@/components/rc/request-charts';
 import type { DeploymentBucket, DurationStats, GraphPoint, PageProps, Paginator, PeriodProps } from '@/types/raccoon';
 import { usePage } from '@inertiajs/react';
 import { Globe, PanelRight } from 'lucide-react';
@@ -58,14 +58,20 @@ export default function RequestsIndex(props: Props) {
         >
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <RequestCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />}
+                    {() => (
+                        <RequestCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />
+                    )}
                 </Deferred>
             </Panel>
 
             <Deferred data="routes" className="mt-10 h-96">
                 {() => (
                     <>
-                        <SectionHeader icon={Globe} title={`${formatNumber(props.routes!.total)} Routes`} actions={<SearchInput value={props.search} placeholder="Search routes" />} />
+                        <SectionHeader
+                            icon={Globe}
+                            title={`${formatNumber(props.routes!.total)} Routes`}
+                            actions={<SearchInput value={props.search} placeholder="Search routes" />}
+                        />
                         <DataTable<RouteRow>
                             rows={props.routes!.data}
                             rowKey={(row) => row.group}
@@ -94,10 +100,38 @@ export default function RequestsIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: '2xx', label: '1/2/3XX', width: '80px', align: 'right', sortable: true, render: (row) => formatCompact(row['2xx']) },
-                                { key: '4xx', label: '4XX', width: '64px', align: 'right', sortable: true, render: (row) => <AlertCount value={row['4xx']} tone="warning" /> },
-                                { key: '5xx', label: '5XX', width: '64px', align: 'right', sortable: true, render: (row) => <AlertCount value={row['5xx']} tone="danger" /> },
-                                { key: 'count', label: 'Total', width: '70px', align: 'right', sortable: true, render: (row) => formatCompact(row.count) },
+                                {
+                                    key: '2xx',
+                                    label: '1/2/3XX',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row['2xx']),
+                                },
+                                {
+                                    key: '4xx',
+                                    label: '4XX',
+                                    width: '64px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <AlertCount value={row['4xx']} tone="warning" />,
+                                },
+                                {
+                                    key: '5xx',
+                                    label: '5XX',
+                                    width: '64px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <AlertCount value={row['5xx']} tone="danger" />,
+                                },
+                                {
+                                    key: 'count',
+                                    label: 'Total',
+                                    width: '70px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.count),
+                                },
                                 { key: 'avg', label: 'Avg', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.avg) },
                                 { key: 'p95', label: 'P95', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.p95) },
                             ]}

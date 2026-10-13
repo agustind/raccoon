@@ -4,8 +4,8 @@ import type { CursorPaginator, DeploymentBucket, GraphPoint, PeriodProps } from 
 import { Link } from '@inertiajs/react';
 import { ArrowUpRight } from 'lucide-react';
 import { ReactNode, useEffect, useState } from 'react';
-import { type CountStats, CountDurationCharts } from './commands-charts';
 import type { Series } from './charts';
+import { type CountStats, CountDurationCharts } from './commands-charts';
 import Drawer from './drawer';
 import { Label } from './section';
 import Timestamp from './timestamp';
@@ -76,7 +76,17 @@ export default function RunsDrawer<T extends DrawerData, R extends RunRow>({
                 </div>
             ) : (
                 <div className="mt-2">
-                    <CountDurationCharts compact title={chartTitle} series={series} legend={legend} graph={data.graph} stats={data.stats} deployments={data.deployments} from={data.from} to={data.to} />
+                    <CountDurationCharts
+                        compact
+                        title={chartTitle}
+                        series={series}
+                        legend={legend}
+                        graph={data.graph}
+                        stats={data.stats}
+                        deployments={data.deployments}
+                        from={data.from}
+                        to={data.to}
+                    />
                     <div className="mt-6 mb-2 flex items-center justify-between">
                         <Label>Latest runs</Label>
                         <Link href={url!} className="flex items-center gap-1 font-mono text-xs text-zinc-600 hover:text-zinc-900">

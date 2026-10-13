@@ -16,7 +16,10 @@ export default function PeriodPicker({ period, periods = PERIODS }: { period: st
         event.preventDefault();
 
         if (from && to) {
-            visitWithQuery({ period: null, from: new Date(from + 'Z').toISOString(), to: new Date(to + 'Z').toISOString() }, { preserveScroll: false });
+            visitWithQuery(
+                { period: null, from: new Date(from + 'Z').toISOString(), to: new Date(to + 'Z').toISOString() },
+                { preserveScroll: false },
+            );
         }
     };
 
@@ -37,7 +40,10 @@ export default function PeriodPicker({ period, periods = PERIODS }: { period: st
             ))}
             <DropdownMenu>
                 <DropdownMenuTrigger
-                    className={cn('flex h-full items-center gap-1 rounded-md px-2 text-zinc-500 hover:text-zinc-900', period === 'custom' && 'bg-blue-600 text-white')}
+                    className={cn(
+                        'flex h-full items-center gap-1 rounded-md px-2 text-zinc-500 hover:text-zinc-900',
+                        period === 'custom' && 'bg-blue-600 text-white',
+                    )}
                 >
                     <CalendarDays className="size-3.5" />
                     <ChevronDown className="size-3" />
@@ -46,11 +52,21 @@ export default function PeriodPicker({ period, periods = PERIODS }: { period: st
                     <form onSubmit={applyRange} className="space-y-3 text-sm">
                         <label className="block">
                             <span className="mb-1 block font-mono text-xs text-zinc-500 uppercase">From (UTC)</span>
-                            <input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} className="w-full rounded-md border border-zinc-200 px-2 py-1.5" />
+                            <input
+                                type="datetime-local"
+                                value={from}
+                                onChange={(e) => setFrom(e.target.value)}
+                                className="w-full rounded-md border border-zinc-200 px-2 py-1.5"
+                            />
                         </label>
                         <label className="block">
                             <span className="mb-1 block font-mono text-xs text-zinc-500 uppercase">To (UTC)</span>
-                            <input type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} className="w-full rounded-md border border-zinc-200 px-2 py-1.5" />
+                            <input
+                                type="datetime-local"
+                                value={to}
+                                onChange={(e) => setTo(e.target.value)}
+                                className="w-full rounded-md border border-zinc-200 px-2 py-1.5"
+                            />
                         </label>
                         <button type="submit" className="w-full rounded-md bg-zinc-900 px-3 py-1.5 text-white">
                             Apply

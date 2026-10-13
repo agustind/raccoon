@@ -5,10 +5,10 @@ import ExceptionCard, { type TraceFrame } from '@/components/rc/exceptions-card'
 import { OccurrencesChart } from '@/components/rc/exceptions-chart';
 import RelatedIssuesButton, { type RelatedIssue } from '@/components/rc/issues-related';
 import { KeyValue } from '@/components/rc/key-value';
-import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
 import { Pagination } from '@/components/rc/pagination';
 import PeriodPicker from '@/components/rc/period-picker';
 import { Card, Panel, SectionHeader } from '@/components/rc/section';
+import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
 import Timestamp from '@/components/rc/timestamp';
 import UserFilter from '@/components/rc/user-filter';
 import EnvironmentLayout from '@/layouts/environment-layout';
@@ -106,7 +106,11 @@ export default function ExceptionsShow(props: Props) {
                         {e.servers.length > 1 ? (
                             <span className="flex items-center gap-2">
                                 {e.servers.length}
-                                <button type="button" onClick={() => setServersOpen(true)} className="rounded-md border border-zinc-200 px-1.5 py-0.5 text-xs hover:bg-zinc-50">
+                                <button
+                                    type="button"
+                                    onClick={() => setServersOpen(true)}
+                                    className="rounded-md border border-zinc-200 px-1.5 py-0.5 text-xs hover:bg-zinc-50"
+                                >
                                     View
                                 </button>
                             </span>
@@ -116,7 +120,9 @@ export default function ExceptionsShow(props: Props) {
                     </Row>
                 </Card>
                 <Deferred data={['graph', 'deployments']} className="h-full min-h-80">
-                    {() => <OccurrencesChart graph={props.graph!} deployments={props.deployments} from={props.from} to={props.to} className="h-full" />}
+                    {() => (
+                        <OccurrencesChart graph={props.graph!} deployments={props.deployments} from={props.from} to={props.to} className="h-full" />
+                    )}
                 </Deferred>
             </Panel>
 
@@ -162,7 +168,11 @@ export default function ExceptionsShow(props: Props) {
 }
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
-    return <KeyValue label={label} className="py-2.5">{children}</KeyValue>;
+    return (
+        <KeyValue label={label} className="py-2.5">
+            {children}
+        </KeyValue>
+    );
 }
 
 function Count({ value }: { value: number }) {

@@ -9,8 +9,21 @@ export interface UserCount extends AppUser {
 }
 
 /** A user row with a request count, or a red exception count when countType is "warning". */
-export default function UserCard({ environmentId, user, countType = 'neutral' }: { environmentId: string; user: UserCount; countType?: 'neutral' | 'warning' }) {
-    const [primary, secondary] = user.name && user.username ? [user.name, user.username] : user.username || user.name ? [user.username ?? user.name, user.id] : [user.id, null];
+export default function UserCard({
+    environmentId,
+    user,
+    countType = 'neutral',
+}: {
+    environmentId: string;
+    user: UserCount;
+    countType?: 'neutral' | 'warning';
+}) {
+    const [primary, secondary] =
+        user.name && user.username
+            ? [user.name, user.username]
+            : user.username || user.name
+              ? [user.username ?? user.name, user.id]
+              : [user.id, null];
 
     return (
         <LinkCard

@@ -77,7 +77,11 @@ export default function ScheduledTasksShow(props: Props) {
             {props.issues.length > 0 && (
                 <div className="mb-4 flex flex-wrap gap-2">
                     {props.issues.map((issue) => (
-                        <Link key={issue.ref} href={envUrl(env.id, `issues/${issue.ref}`)} className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-800">
+                        <Link
+                            key={issue.ref}
+                            href={envUrl(env.id, `issues/${issue.ref}`)}
+                            className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-800"
+                        >
                             <TriangleAlert className="size-4" /> #{issue.ref} {issue.title}
                         </Link>
                     ))}
@@ -150,7 +154,13 @@ export default function ScheduledTasksShow(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'duration', label: 'Duration', width: '90px', align: 'right', render: (row) => <DurationValue value={row.duration} thresholdMs={props.threshold} /> },
+                                {
+                                    key: 'duration',
+                                    label: 'Duration',
+                                    width: '90px',
+                                    align: 'right',
+                                    render: (row) => <DurationValue value={row.duration} thresholdMs={props.threshold} />,
+                                },
                             ]}
                         />
                         <CursorPagination paginator={props.runs!} />

@@ -92,7 +92,14 @@ export default function JobsIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'queued', label: 'Queued', width: '90px', align: 'right', sortable: true, render: (row) => formatCompact(row.queued) },
+                                {
+                                    key: 'queued',
+                                    label: 'Queued',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.queued),
+                                },
                                 {
                                     key: 'processed',
                                     label: 'Processed',
@@ -125,9 +132,30 @@ export default function JobsIndex(props: Props) {
                                         </CellLink>
                                     ),
                                 },
-                                { key: 'total', label: 'Total', width: '70px', align: 'right', sortable: true, render: (row) => formatCompact(row.count) },
-                                { key: 'avg', label: 'Avg', width: '90px', align: 'right', sortable: true, render: (row) => <Duration value={row.avg} thresholdMs={row.threshold} /> },
-                                { key: 'p95', label: 'P95', width: '90px', align: 'right', sortable: true, render: (row) => <Duration value={row.p95} thresholdMs={row.threshold} /> },
+                                {
+                                    key: 'total',
+                                    label: 'Total',
+                                    width: '70px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.count),
+                                },
+                                {
+                                    key: 'avg',
+                                    label: 'Avg',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <Duration value={row.avg} thresholdMs={row.threshold} />,
+                                },
+                                {
+                                    key: 'p95',
+                                    label: 'P95',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <Duration value={row.p95} thresholdMs={row.threshold} />,
+                                },
                             ]}
                         />
                         <Pagination paginator={props.jobs!} />

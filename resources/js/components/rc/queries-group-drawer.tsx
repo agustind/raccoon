@@ -81,7 +81,8 @@ export default function GroupDrawer<T, C extends DrawerCall>({
 
                     <div className="flex items-center justify-between">
                         <h3 className="text-base font-medium">
-                            {label} <span className="ml-1 rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">{formatNumber(count(details))}</span>
+                            {label}{' '}
+                            <span className="ml-1 rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">{formatNumber(count(details))}</span>
                         </h3>
                         <Link href={href} className="flex items-center gap-1 font-mono text-xs text-zinc-600 uppercase hover:text-zinc-900">
                             View all <ArrowUpRight className="size-3.5" />
@@ -104,7 +105,11 @@ export default function GroupDrawer<T, C extends DrawerCall>({
                             const className = cn('block rounded-lg border bg-white px-4 py-3', error ? 'border-rose-200' : 'border-zinc-200');
 
                             return call.execution_url ? (
-                                <Link key={`${call.trace_id}:${call.timestamp}`} href={envUrl(auth.env!.id, call.execution_url)} className={cn(className, 'hover:border-zinc-300')}>
+                                <Link
+                                    key={`${call.trace_id}:${call.timestamp}`}
+                                    href={envUrl(auth.env!.id, call.execution_url)}
+                                    className={cn(className, 'hover:border-zinc-300')}
+                                >
                                     {body}
                                 </Link>
                             ) : (

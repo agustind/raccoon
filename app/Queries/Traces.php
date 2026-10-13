@@ -81,14 +81,18 @@ class Traces
         foreach ($tasks as $row) {
             $executions[] = $this->execution('scheduled_task', $row['trace_id'], $row['name'], $row, [
                 'status' => $row['status'],
-                'variant' => match ($row['status']) { 'failed' => 'danger', 'skipped' => 'warning', default => 'success' },
+                'variant' => match ($row['status']) {
+                    'failed' => 'danger', 'skipped' => 'warning', default => 'success'
+                },
             ]);
         }
 
         foreach ($jobs as $row) {
             $executions[] = $this->execution('job', $row['attempt_id'], $row['name'], $row, [
                 'status' => $row['status'],
-                'variant' => match ($row['status']) { 'failed' => 'danger', 'released' => 'warning', default => 'default' },
+                'variant' => match ($row['status']) {
+                    'failed' => 'danger', 'released' => 'warning', default => 'default'
+                },
                 'link' => ['group' => $row['group'], 'job_id' => $row['job_id'], 'attempt_id' => $row['attempt_id']],
             ]);
         }

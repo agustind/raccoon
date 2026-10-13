@@ -48,7 +48,9 @@ export default function QueriesIndex(props: Props) {
             title="Queries"
             actions={
                 <>
-                    {(props.connections.length > 1 || props.connection) && <ConnectionFilter connections={props.connections} active={props.connection} />}
+                    {(props.connections.length > 1 || props.connection) && (
+                        <ConnectionFilter connections={props.connections} active={props.connection} />
+                    )}
                     <PeriodPicker period={props.period} />
                 </>
             }
@@ -93,7 +95,14 @@ export default function QueriesIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'connection', label: 'Connection', width: '110px', align: 'right', sortable: true, render: (row) => row.connection },
+                                {
+                                    key: 'connection',
+                                    label: 'Connection',
+                                    width: '110px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => row.connection,
+                                },
                                 {
                                     key: 'count',
                                     label: 'Calls',
@@ -106,7 +115,14 @@ export default function QueriesIndex(props: Props) {
                                         </Link>
                                     ),
                                 },
-                                { key: 'total', label: 'Total', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.total) },
+                                {
+                                    key: 'total',
+                                    label: 'Total',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatDuration(row.total),
+                                },
                                 { key: 'avg', label: 'Avg', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.avg) },
                                 { key: 'p95', label: 'P95', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.p95) },
                             ]}

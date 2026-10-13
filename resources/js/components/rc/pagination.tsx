@@ -14,7 +14,13 @@ export function Pagination({ paginator }: { paginator: Paginator<unknown> }) {
             </span>
             <div className="flex items-center gap-1">
                 {paginator.links.map((link, index) => {
-                    const label = link.label.includes('Previous') ? <ChevronLeft className="size-3.5" /> : link.label.includes('Next') ? <ChevronRight className="size-3.5" /> : link.label;
+                    const label = link.label.includes('Previous') ? (
+                        <ChevronLeft className="size-3.5" />
+                    ) : link.label.includes('Next') ? (
+                        <ChevronRight className="size-3.5" />
+                    ) : (
+                        link.label
+                    );
 
                     return link.url ? (
                         <Link
@@ -22,7 +28,10 @@ export function Pagination({ paginator }: { paginator: Paginator<unknown> }) {
                             href={link.url}
                             preserveScroll
                             preserveState
-                            className={cn('flex h-7 min-w-7 items-center justify-center rounded-md border border-zinc-200 bg-white px-2 hover:bg-zinc-50', link.active && 'border-blue-600 bg-blue-600 text-white hover:bg-blue-600')}
+                            className={cn(
+                                'flex h-7 min-w-7 items-center justify-center rounded-md border border-zinc-200 bg-white px-2 hover:bg-zinc-50',
+                                link.active && 'border-blue-600 bg-blue-600 text-white hover:bg-blue-600',
+                            )}
                         >
                             {label}
                         </Link>
@@ -46,12 +55,21 @@ export function CursorPagination({ paginator }: { paginator: CursorPaginator<unk
     return (
         <div className="mt-4 flex justify-end gap-2 font-mono text-xs">
             {first && (
-                <button type="button" onClick={() => window.history.back()} className="flex h-8 items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 hover:bg-zinc-50">
+                <button
+                    type="button"
+                    onClick={() => window.history.back()}
+                    className="flex h-8 items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 hover:bg-zinc-50"
+                >
                     <ChevronLeft className="size-3.5" /> Newer
                 </button>
             )}
             {paginator.next_page_url && (
-                <Link href={paginator.next_page_url} preserveScroll preserveState className="flex h-8 items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 hover:bg-zinc-50">
+                <Link
+                    href={paginator.next_page_url}
+                    preserveScroll
+                    preserveState
+                    className="flex h-8 items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 hover:bg-zinc-50"
+                >
                     Older <ChevronRight className="size-3.5" />
                 </Link>
             )}

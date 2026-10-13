@@ -1,6 +1,5 @@
 import { MethodPill, StatusPill } from '@/components/rc/badges';
 import CodeBlock from '@/components/rc/code-block';
-import CopyMarkdownButton from '@/components/rc/copy-markdown-button';
 import { Collapsible, DeploymentRow, EventsSummary, ExceptionsCard, LogsCard } from '@/components/rc/execution-details';
 import { KeyValue } from '@/components/rc/key-value';
 import { Card } from '@/components/rc/section';
@@ -71,42 +70,37 @@ export default function RequestsShow(props: Props) {
                 { title: 'Requests', href: withPeriod(envUrl(env.id, 'requests')) },
                 { title: r.route_path || 'Route', href: withPeriod(envUrl(env.id, `requests/routes/${r.group}`)) },
             ]}
-            actions={
-                <CopyMarkdownButton
-                    filename={`request-${r.trace_id}.md`}
-                    build={() =>
-                        executionToMarkdown({
-                            title: `${r.method} ${r.route_path || r.url}`,
-                            kind: 'request',
-                            fields: [
-                                ['URL', `${r.method} ${r.url}`],
-                                ['Date', `${r.timestamp} UTC`],
-                                ['Status', r.status_code],
-                                ['Duration', formatDuration(r.duration)],
-                                ['Route', r.route_name],
-                                ['Action', r.route_action],
-                                ['Server', r.server],
-                                ['Request size', formatBytes(r.request_size)],
-                                ['Response size', formatBytes(r.response_size)],
-                                ['Peak memory', formatBytes(r.peak_memory_usage)],
-                                ['User', r.user.username ?? r.user.name ?? (r.user.id || 'guest')],
-                                ['IP', r.ip],
-                                ['Trace ID', r.trace_id],
-                            ],
-                            deployment: props.deployment,
-                            summary: props.summary,
-                            executions: props.executions,
-                            currentId: r.trace_id,
-                            exceptions: props.exceptions,
-                            logs: props.logs,
-                            blocks: [
-                                { title: 'Headers', content: r.headers },
-                                { title: 'Payload', content: r.payload },
-                                { title: 'Context', content: r.context },
-                            ],
-                        })
-                    }
-                />
+            exportMarkdown={() =>
+                executionToMarkdown({
+                    title: `${r.method} ${r.route_path || r.url}`,
+                    kind: 'request',
+                    fields: [
+                        ['URL', `${r.method} ${r.url}`],
+                        ['Date', `${r.timestamp} UTC`],
+                        ['Status', r.status_code],
+                        ['Duration', formatDuration(r.duration)],
+                        ['Route', r.route_name],
+                        ['Action', r.route_action],
+                        ['Server', r.server],
+                        ['Request size', formatBytes(r.request_size)],
+                        ['Response size', formatBytes(r.response_size)],
+                        ['Peak memory', formatBytes(r.peak_memory_usage)],
+                        ['User', r.user.username ?? r.user.name ?? (r.user.id || 'guest')],
+                        ['IP', r.ip],
+                        ['Trace ID', r.trace_id],
+                    ],
+                    deployment: props.deployment,
+                    summary: props.summary,
+                    executions: props.executions,
+                    currentId: r.trace_id,
+                    exceptions: props.exceptions,
+                    logs: props.logs,
+                    blocks: [
+                        { title: 'Headers', content: r.headers },
+                        { title: 'Payload', content: r.payload },
+                        { title: 'Context', content: r.context },
+                    ],
+                })
             }
         >
             <Card>

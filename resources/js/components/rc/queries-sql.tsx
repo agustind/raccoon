@@ -22,7 +22,26 @@ const KEYWORDS = new Set(
 );
 
 /** Keywords that start a clause on a new line when formatting. */
-const CLAUSES = new Set(['select', 'from', 'where', 'group', 'order', 'having', 'limit', 'offset', 'join', 'left', 'right', 'inner', 'cross', 'full', 'union', 'values', 'set', 'returning']);
+const CLAUSES = new Set([
+    'select',
+    'from',
+    'where',
+    'group',
+    'order',
+    'having',
+    'limit',
+    'offset',
+    'join',
+    'left',
+    'right',
+    'inner',
+    'cross',
+    'full',
+    'union',
+    'values',
+    'set',
+    'returning',
+]);
 
 /** Clauses whose top-level commas each start a new line. */
 const LIST_CLAUSES = new Set(['select', 'group', 'order', 'set', 'returning']);
@@ -46,7 +65,10 @@ export function tokenizeSql(sql: string): Token[] {
 
 /** One-line SQL for table rows: newlines and repeated spaces collapsed. */
 export function compactSql(sql: string): string {
-    return sql.replaceAll('\n', ' ').replaceAll(/\s{2,}/g, ' ').trim();
+    return sql
+        .replaceAll('\n', ' ')
+        .replaceAll(/\s{2,}/g, ' ')
+        .trim();
 }
 
 function isClause(tokens: Token[], index: number): boolean {
@@ -127,7 +149,11 @@ export function formatSql(sql: string): string {
             return;
         }
 
-        if (['by', 'join', 'outer'].includes(token.text.toLowerCase()) && previous && ['group', 'order', 'left', 'right', 'inner', 'cross', 'full', 'outer'].includes(previous.text.toLowerCase())) {
+        if (
+            ['by', 'join', 'outer'].includes(token.text.toLowerCase()) &&
+            previous &&
+            ['group', 'order', 'left', 'right', 'inner', 'cross', 'full', 'outer'].includes(previous.text.toLowerCase())
+        ) {
             append(token.text, previous);
 
             if (token.text.toLowerCase() !== 'outer') newline(level + 1);

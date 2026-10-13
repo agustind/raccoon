@@ -66,7 +66,9 @@ export function CountDurationCharts({
                 label="Duration"
                 value={formatDurationRange(stats.min, stats.max)}
                 legend={[
-                    ...(thresholdMs !== undefined ? [{ label: 'Threshold', color: COLORS.threshold, value: thresholdMs ? formatDuration(thresholdMs * 1000) : 'N/A' }] : []),
+                    ...(thresholdMs !== undefined
+                        ? [{ label: 'Threshold', color: COLORS.threshold, value: thresholdMs ? formatDuration(thresholdMs * 1000) : 'N/A' }]
+                        : []),
                     { label: 'Avg', color: COLORS.avg, value: formatDuration(stats.avg) },
                     { label: 'P95', color: COLORS.p95, value: formatDuration(stats.p95) },
                 ]}

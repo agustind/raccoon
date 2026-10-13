@@ -52,7 +52,16 @@ export default function MailIndex(props: Props) {
         >
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <MessageCharts label="Mails" graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />}
+                    {() => (
+                        <MessageCharts
+                            label="Mails"
+                            graph={props.graph!}
+                            stats={props.stats!}
+                            deployments={props.deployments}
+                            from={props.from}
+                            to={props.to}
+                        />
+                    )}
                 </Deferred>
             </Panel>
 
@@ -88,8 +97,22 @@ export default function MailIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'count', label: 'Count', width: '80px', align: 'right', sortable: true, render: (row) => formatCompact(row.count) },
-                                { key: 'failed', label: 'Failed', width: '80px', align: 'right', sortable: true, render: (row) => <AlertCount value={row.failed} tone="danger" /> },
+                                {
+                                    key: 'count',
+                                    label: 'Count',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.count),
+                                },
+                                {
+                                    key: 'failed',
+                                    label: 'Failed',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <AlertCount value={row.failed} tone="danger" />,
+                                },
                                 { key: 'avg', label: 'Avg', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.avg) },
                                 { key: 'p95', label: 'P95', width: '90px', align: 'right', sortable: true, render: (row) => formatDuration(row.p95) },
                             ]}

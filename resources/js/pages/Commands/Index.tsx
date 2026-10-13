@@ -97,11 +97,46 @@ export default function CommandsIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'success', label: 'Success', width: '90px', align: 'right', sortable: true, render: (row) => <CountLink href={groupUrl(row.group, '?failed=0')} value={row.success} /> },
-                                { key: 'failed', label: 'Failed', width: '80px', align: 'right', sortable: true, render: (row) => <CountLink href={groupUrl(row.group, '?failed=1')} value={row.failed} tone="danger" /> },
-                                { key: 'total', label: 'Total', width: '70px', align: 'right', sortable: true, render: (row) => formatCompact(row.count) },
-                                { key: 'avg', label: 'Avg', width: '100px', align: 'right', sortable: true, render: (row) => <DurationValue value={row.avg} thresholdMs={row.threshold} /> },
-                                { key: 'p95', label: 'P95', width: '90px', align: 'right', sortable: true, render: (row) => <DurationValue value={row.p95} thresholdMs={row.threshold} /> },
+                                {
+                                    key: 'success',
+                                    label: 'Success',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <CountLink href={groupUrl(row.group, '?failed=0')} value={row.success} />,
+                                },
+                                {
+                                    key: 'failed',
+                                    label: 'Failed',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <CountLink href={groupUrl(row.group, '?failed=1')} value={row.failed} tone="danger" />,
+                                },
+                                {
+                                    key: 'total',
+                                    label: 'Total',
+                                    width: '70px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.count),
+                                },
+                                {
+                                    key: 'avg',
+                                    label: 'Avg',
+                                    width: '100px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <DurationValue value={row.avg} thresholdMs={row.threshold} />,
+                                },
+                                {
+                                    key: 'p95',
+                                    label: 'P95',
+                                    width: '90px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => <DurationValue value={row.p95} thresholdMs={row.threshold} />,
+                                },
                             ]}
                         />
                     </>

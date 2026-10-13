@@ -35,7 +35,13 @@ export default function DetailsDrawer({ group, onClose }: { group: string | null
             charts={(details) => (
                 // RequestCharts lays its cards out in two columns; the drawer stacks them.
                 <div className="[&>div]:grid-cols-1">
-                    <RequestCharts graph={details.graph} stats={details.stats} deployments={details.deployments} from={details.from} to={details.to} />
+                    <RequestCharts
+                        graph={details.graph}
+                        stats={details.stats}
+                        deployments={details.deployments}
+                        from={details.from}
+                        to={details.to}
+                    />
                 </div>
             )}
             count={(details) => details.stats.count}

@@ -61,7 +61,11 @@ export default function CacheIndex(props: Props) {
                             <MetricCard
                                 label="Events"
                                 value={formatCompact(props.stats!.count)}
-                                legend={EVENT_SERIES.map((s) => ({ label: s.label, color: s.color, value: formatCompact(props.stats![s.key as keyof CacheCounts]) }))}
+                                legend={EVENT_SERIES.map((s) => ({
+                                    label: s.label,
+                                    color: s.color,
+                                    value: formatCompact(props.stats![s.key as keyof CacheCounts]),
+                                }))}
                                 from={props.from}
                                 to={props.to}
                             >
@@ -70,7 +74,11 @@ export default function CacheIndex(props: Props) {
                             <MetricCard
                                 label="Failures"
                                 value={formatCompact(props.stats!.total_failures)}
-                                legend={FAILURE_SERIES.map((s) => ({ label: s.label, color: s.color, value: formatCompact(props.stats![s.key as keyof CacheCounts]) }))}
+                                legend={FAILURE_SERIES.map((s) => ({
+                                    label: s.label,
+                                    color: s.color,
+                                    value: formatCompact(props.stats![s.key as keyof CacheCounts]),
+                                }))}
                                 from={props.from}
                                 to={props.to}
                             >
@@ -84,7 +92,10 @@ export default function CacheIndex(props: Props) {
             <Deferred data="keys" className="mt-10 h-96">
                 {() => (
                     <>
-                        <SectionHeader icon={DatabaseZap} title={`${keys!.length === 100 ? 'Top ' : ''}${formatNumber(keys!.length)} ${keys!.length === 1 ? 'key' : 'keys'}`} />
+                        <SectionHeader
+                            icon={DatabaseZap}
+                            title={`${keys!.length === 100 ? 'Top ' : ''}${formatNumber(keys!.length)} ${keys!.length === 1 ? 'key' : 'keys'}`}
+                        />
                         <DataTable<KeyRow>
                             rows={keys!}
                             rowKey={(row) => row.group}
@@ -104,11 +115,46 @@ export default function CacheIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'hit_ratio', label: 'Hit %', width: '80px', align: 'right', sortable: true, render: (row) => `${row.hit_ratio}%` },
-                                { key: 'hits', label: 'Hits', width: '70px', align: 'right', sortable: true, render: (row) => formatCompact(row.hits) },
-                                { key: 'misses', label: 'Misses', width: '80px', align: 'right', sortable: true, render: (row) => formatCompact(row.misses) },
-                                { key: 'writes', label: 'Writes', width: '80px', align: 'right', sortable: true, render: (row) => formatCompact(row.writes) },
-                                { key: 'deletes', label: 'Deletes', width: '80px', align: 'right', sortable: true, render: (row) => formatCompact(row.deletes) },
+                                {
+                                    key: 'hit_ratio',
+                                    label: 'Hit %',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => `${row.hit_ratio}%`,
+                                },
+                                {
+                                    key: 'hits',
+                                    label: 'Hits',
+                                    width: '70px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.hits),
+                                },
+                                {
+                                    key: 'misses',
+                                    label: 'Misses',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.misses),
+                                },
+                                {
+                                    key: 'writes',
+                                    label: 'Writes',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.writes),
+                                },
+                                {
+                                    key: 'deletes',
+                                    label: 'Deletes',
+                                    width: '80px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.deletes),
+                                },
                                 {
                                     key: 'total_failures',
                                     label: 'Failures',
@@ -121,7 +167,14 @@ export default function CacheIndex(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'count', label: 'Total', width: '70px', align: 'right', sortable: true, render: (row) => formatCompact(row.count) },
+                                {
+                                    key: 'count',
+                                    label: 'Total',
+                                    width: '70px',
+                                    align: 'right',
+                                    sortable: true,
+                                    render: (row) => formatCompact(row.count),
+                                },
                             ]}
                         />
                     </>

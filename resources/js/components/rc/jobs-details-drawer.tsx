@@ -81,7 +81,14 @@ export default function JobDetailsDrawer({ environmentId, group, onClose }: { en
             )}
             {details && (
                 <div className="mt-2">
-                    <JobCharts graph={details.graph} stats={details.stats} deployments={details.deployments} from={details.from} to={details.to} compact />
+                    <JobCharts
+                        graph={details.graph}
+                        stats={details.stats}
+                        deployments={details.deployments}
+                        from={details.from}
+                        to={details.to}
+                        compact
+                    />
 
                     <div className="mt-4">
                         <KeyValue label="Queued">{formatNumber(details.stats.queued ?? 0)}</KeyValue>

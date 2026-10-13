@@ -2,10 +2,10 @@ import { Pill } from '@/components/rc/badges';
 import CodeBlock from '@/components/rc/code-block';
 import Drawer from '@/components/rc/drawer';
 import LevelFilter from '@/components/rc/logs-level-filter';
-import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
 import PeriodPicker from '@/components/rc/period-picker';
 import SearchInput from '@/components/rc/search-input';
 import { Card, Label } from '@/components/rc/section';
+import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
 import Timestamp from '@/components/rc/timestamp';
 import UserFilter from '@/components/rc/user-filter';
 import EnvironmentLayout from '@/layouts/environment-layout';
@@ -100,7 +100,9 @@ export default function LogsIndex(props: Props) {
         >
             <div ref={top} className="flex min-h-12 items-center justify-center">
                 {loading && <span className="animate-pulse rounded-lg bg-white px-3 py-1 font-mono text-sm uppercase">Loading...</span>}
-                {!loading && !nextUrl && <div className="w-full rounded-lg border border-zinc-200 bg-white p-3 text-center font-mono text-sm uppercase">End of logs</div>}
+                {!loading && !nextUrl && (
+                    <div className="w-full rounded-lg border border-zinc-200 bg-white p-3 text-center font-mono text-sm uppercase">End of logs</div>
+                )}
             </div>
 
             <div className="mt-1.5 grid grid-cols-[auto_auto_auto_minmax(0,1fr)_auto] gap-x-4 gap-y-1">
@@ -189,7 +191,10 @@ function LogDetails({ entry }: { entry: LogEntry }) {
                 <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-2.5">
                     <span className="text-sm font-medium">Source</span>
                     {entry.execution_url && (
-                        <Link href={envUrl(auth.env!.id, entry.execution_url)} className="flex items-center gap-1 rounded-md border border-zinc-200 px-2 py-1 font-mono text-xs uppercase hover:bg-zinc-50">
+                        <Link
+                            href={envUrl(auth.env!.id, entry.execution_url)}
+                            className="flex items-center gap-1 rounded-md border border-zinc-200 px-2 py-1 font-mono text-xs uppercase hover:bg-zinc-50"
+                        >
                             {entry.execution_source} <ArrowUpRight className="size-3.5 text-emerald-500" />
                         </Link>
                     )}

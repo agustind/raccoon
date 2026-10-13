@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Environment\Concerns;
 
+use App\ClickHouse\ClickHouse;
 use App\Models\Environment;
 
 /**
@@ -13,7 +14,7 @@ use App\Models\Environment;
  * URL, so those are looked up by execution id. Scheduled tasks send an empty
  * execution_preview; the task name fills it.
  *
- * @property \App\ClickHouse\ClickHouse $clickhouse
+ * @property ClickHouse $clickhouse
  */
 trait ResolvesExecutionSources
 {

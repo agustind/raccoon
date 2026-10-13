@@ -1,4 +1,6 @@
+import CopyMarkdownButton from '@/components/rc/copy-markdown-button';
 import Sidebar from '@/components/rc/sidebar';
+import { pageToMarkdown } from '@/lib/export-page';
 import { cn } from '@/lib/utils';
 import type { PageProps } from '@/types/raccoon';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -17,6 +19,11 @@ interface Props {
     breadcrumbs?: Crumb[];
     /** Right side of the header: user filter, period picker... */
     actions?: ReactNode;
+    /**
+     * Builds the page's "Copy for AI" Markdown. Defaults to a generic export of
+     * the page props; pass false to hide the button.
+     */
+    exportMarkdown?: (() => string) | false;
     children: ReactNode;
     className?: string;
 }
@@ -25,12 +32,13 @@ interface Props {
  * Shell for every dashboard page: sidebar, page header and a
  * gray page background with cards on top.
  */
-export default function EnvironmentLayout({ title, heading, breadcrumbs, actions, children, className }: Props) {
-    const { auth } = usePage<PageProps>().props;
+export default function EnvironmentLayout({ title, heading, breadcrumbs, actions, exportMarkdown, children, className }: Props) {
+    const page = usePage<PageProps>();
+    const { auth } = page.props;
     const pageTitle = [title, auth.app && auth.env ? `${auth.app.name} (${auth.env.name})` : null].filter(Boolean).join(' - ');
 
     return (
-        <div className="flex min-h-screen bg-rc-page text-zinc-900">
+        <div className="bg-rc-page flex min-h-screen text-zinc-900">
             <Head title={pageTitle} />
             <Sidebar />
             <main className="min-w-0 flex-1">
@@ -56,7 +64,20 @@ export default function EnvironmentLayout({ title, heading, breadcrumbs, actions
                             )}
                             <h1 className="truncate text-2xl font-semibold tracking-tight">{heading ?? title}</h1>
                         </div>
-                        {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+                        <div className="flex shrink-0 items-center gap-2">
+                            {exportMarkdown !== false && (
+                                <CopyMarkdownButton
+                                    filename={`${
+                                        title
+                                            .replace(/[^a-z0-9]+/gi, '-')
+                                            .replace(/^-|-$/g, '')
+                                            .toLowerCase() || 'page'
+                                    }.md`}
+                                    build={exportMarkdown ?? (() => pageToMarkdown(title, page.props as Record<string, unknown>))}
+                                />
+                            )}
+                            {actions}
+                        </div>
                     </header>
                     {children}
                 </div>

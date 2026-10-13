@@ -8,6 +8,7 @@ use App\Models\Issue;
 use App\Models\Threshold;
 use App\Queries\Deployments;
 use App\Queries\Graph;
+use App\Queries\Period;
 use App\Queries\Traces;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +16,7 @@ use Inertia\Response;
 
 class RequestController extends EnvironmentController
 {
-    private const STATUS_COUNTS = "count() AS count, countIf(status_code < 400) AS `2xx`, countIf(status_code >= 400 AND status_code < 500) AS `4xx`, countIf(status_code >= 500) AS `5xx`";
+    private const STATUS_COUNTS = 'count() AS count, countIf(status_code < 400) AS `2xx`, countIf(status_code >= 400 AND status_code < 500) AS `4xx`, countIf(status_code >= 500) AS `5xx`';
 
     private const EMPTY_GRAPH = ['count' => 0, '2xx' => 0, '4xx' => 0, '5xx' => 0, 'min' => null, 'max' => null, 'avg' => null, 'p95' => null];
 
@@ -119,7 +120,7 @@ class RequestController extends EnvironmentController
      * @param  array<string, mixed>  $bindings
      * @return list<array<string, mixed>>
      */
-    private function graph(Environment $environment, \App\Queries\Period $period, array $bindings, string $where = ''): array
+    private function graph(Environment $environment, Period $period, array $bindings, string $where = ''): array
     {
         $rows = $this->select(
             'SELECT '.$this->bucket().' AS bucket, '.self::STATUS_COUNTS.', '.$this->durationAggregates()."

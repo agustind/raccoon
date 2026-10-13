@@ -3,7 +3,19 @@ import { LucideIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 
 /** Outer gray frame that groups cards ("Activity", "Application" on the dashboard). */
-export function Panel({ title, icon: Icon, actions, children, className }: { title?: ReactNode; icon?: LucideIcon; actions?: ReactNode; children: ReactNode; className?: string }) {
+export function Panel({
+    title,
+    icon: Icon,
+    actions,
+    children,
+    className,
+}: {
+    title?: ReactNode;
+    icon?: LucideIcon;
+    actions?: ReactNode;
+    children: ReactNode;
+    className?: string;
+}) {
     return (
         <section className={cn('rounded-xl border border-zinc-200 bg-zinc-50/60 p-1.5', className)}>
             {(title || actions) && (
@@ -47,7 +59,17 @@ export function Label({ children, className }: { children: ReactNode; className?
     return <span className={cn('font-mono text-xs tracking-wide text-zinc-500 uppercase', className)}>{children}</span>;
 }
 
-export function EmptyState({ icon: Icon, title, description, action }: { icon?: LucideIcon; title: string; description?: ReactNode; action?: ReactNode }) {
+export function EmptyState({
+    icon: Icon,
+    title,
+    description,
+    action,
+}: {
+    icon?: LucideIcon;
+    title: string;
+    description?: ReactNode;
+    action?: ReactNode;
+}) {
     return (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-zinc-200 bg-white px-6 py-14 text-center">
             {Icon && (

@@ -35,7 +35,10 @@ export default function Timeline({ executions, currentId }: { executions: Execut
     // Spans can end after their execution (e.g. failed_jobs inserts), so size
     // the ruler to the furthest bar and leave room for duration labels.
     const total = useMemo(() => {
-        const ends = executions.flatMap((e) => [e.offset + e.duration, ...e.stages.flatMap((s) => s.spans.map((span) => e.offset + span.offset + span.duration))]);
+        const ends = executions.flatMap((e) => [
+            e.offset + e.duration,
+            ...e.stages.flatMap((s) => s.spans.map((span) => e.offset + span.offset + span.duration)),
+        ]);
 
         return Math.max(1, ...ends) * 1.08;
     }, [executions]);
@@ -63,7 +66,11 @@ export default function Timeline({ executions, currentId }: { executions: Execut
                 <div className="border-r border-b border-zinc-200 px-4 py-3 text-base font-medium">Timeline</div>
                 <div className="relative border-b border-zinc-200">
                     {ticks.map((tick) => (
-                        <span key={tick} className="absolute top-3 font-mono text-xs text-zinc-500" style={{ left: `calc(${(tick / total) * 100}% + 4px)` }}>
+                        <span
+                            key={tick}
+                            className="absolute top-3 font-mono text-xs text-zinc-500"
+                            style={{ left: `calc(${(tick / total) * 100}% + 4px)` }}
+                        >
                             {formatDuration(tick)}
                         </span>
                     ))}
@@ -78,14 +85,24 @@ export default function Timeline({ executions, currentId }: { executions: Execut
                             <button
                                 type="button"
                                 onClick={() => setCollapsed((c) => ({ ...c, [execution.id]: !c[execution.id] }))}
-                                className={cn('flex items-center gap-2 border-r border-b border-zinc-100 px-3 py-2 text-left text-sm', execution.id === currentId && 'bg-zinc-50')}
+                                className={cn(
+                                    'flex items-center gap-2 border-r border-b border-zinc-100 px-3 py-2 text-left text-sm',
+                                    execution.id === currentId && 'bg-zinc-50',
+                                )}
                             >
-                                {isCollapsed ? <ChevronRight className="size-3.5 shrink-0 text-zinc-400" /> : <ChevronDown className="size-3.5 shrink-0 text-zinc-400" />}
+                                {isCollapsed ? (
+                                    <ChevronRight className="size-3.5 shrink-0 text-zinc-400" />
+                                ) : (
+                                    <ChevronDown className="size-3.5 shrink-0 text-zinc-400" />
+                                )}
                                 <span className="font-mono text-xs text-zinc-500 uppercase">{execution.name.replace('_', ' ')}</span>
                                 <span className="min-w-0 flex-1 truncate font-mono text-xs">{execution.description}</span>
                                 {execution.link && auth.env && execution.id !== currentId && (
                                     <Link
-                                        href={envUrl(auth.env.id, `jobs/attempts/${execution.link.group}/${execution.link.job_id}/${execution.link.attempt_id}`)}
+                                        href={envUrl(
+                                            auth.env.id,
+                                            `jobs/attempts/${execution.link.group}/${execution.link.job_id}/${execution.link.attempt_id}`,
+                                        )}
                                         onClick={(e) => e.stopPropagation()}
                                         className="text-zinc-400 hover:text-zinc-900"
                                     >
@@ -94,8 +111,13 @@ export default function Timeline({ executions, currentId }: { executions: Execut
                                 )}
                             </button>
                             <Row>
-                                <div className={cn('absolute top-1.5 bottom-1.5 rounded border', EXECUTION_COLORS[execution.variant])} style={position(executionOffset, execution.duration)}>
-                                    <span className="absolute top-1/2 left-1.5 -translate-y-1/2 font-mono text-[11px] whitespace-nowrap text-zinc-700">{formatDuration(execution.duration)}</span>
+                                <div
+                                    className={cn('absolute top-1.5 bottom-1.5 rounded border', EXECUTION_COLORS[execution.variant])}
+                                    style={position(executionOffset, execution.duration)}
+                                >
+                                    <span className="absolute top-1/2 left-1.5 -translate-y-1/2 font-mono text-[11px] whitespace-nowrap text-zinc-700">
+                                        {formatDuration(execution.duration)}
+                                    </span>
                                 </div>
                             </Row>
 
@@ -108,7 +130,10 @@ export default function Timeline({ executions, currentId }: { executions: Execut
                                         </div>
                                         <Row>
                                             {stage.duration > 0 && (
-                                                <div className="absolute top-2 bottom-2 rounded-sm bg-zinc-200" style={position(executionOffset + stage.offset, stage.duration)} />
+                                                <div
+                                                    className="absolute top-2 bottom-2 rounded-sm bg-zinc-200"
+                                                    style={position(executionOffset + stage.offset, stage.duration)}
+                                                />
                                             )}
                                         </Row>
 
@@ -122,14 +147,19 @@ export default function Timeline({ executions, currentId }: { executions: Execut
                                                         selected === span && 'bg-blue-50',
                                                     )}
                                                 >
-                                                    <span className={cn('size-2 shrink-0 rounded-sm', SPAN_COLORS[span.span_type] ?? 'bg-zinc-400')} />
+                                                    <span
+                                                        className={cn('size-2 shrink-0 rounded-sm', SPAN_COLORS[span.span_type] ?? 'bg-zinc-400')}
+                                                    />
                                                     <span className="min-w-0 flex-1 truncate text-zinc-700" title={span.description}>
                                                         {span.span_type === 'query' ? span.description : `${span.name} ${span.description}`}
                                                     </span>
                                                 </button>
                                                 <Row onClick={() => setSelected(selected === span ? null : span)}>
                                                     <div
-                                                        className={cn('absolute top-2 bottom-2 rounded-sm', SPAN_COLORS[span.span_type] ?? 'bg-zinc-400')}
+                                                        className={cn(
+                                                            'absolute top-2 bottom-2 rounded-sm',
+                                                            SPAN_COLORS[span.span_type] ?? 'bg-zinc-400',
+                                                        )}
                                                         style={position(executionOffset + span.offset, span.duration)}
                                                     />
                                                     <span
@@ -165,7 +195,11 @@ function SpanDetails({ span }: { span: Span }) {
     return (
         <div className="border-t border-zinc-200 bg-zinc-50/50 p-5">
             <div className="mb-3 font-mono text-xs text-zinc-500 uppercase">{span.span_type.replace('_', ' ')}</div>
-            {span.span_type === 'query' ? <CodeBlock code={span.description} className="mb-3 bg-white" /> : <div className="mb-3 font-mono text-sm break-all">{span.description}</div>}
+            {span.span_type === 'query' ? (
+                <CodeBlock code={span.description} className="mb-3 bg-white" />
+            ) : (
+                <div className="mb-3 font-mono text-sm break-all">{span.description}</div>
+            )}
             <div className="grid grid-cols-2 gap-x-10">
                 <KeyValue label="Duration">{formatDuration(span.duration)}</KeyValue>
                 <KeyValue label="Offset">{formatDuration(span.offset)}</KeyValue>

@@ -16,7 +16,7 @@ class OutgoingRequestController extends EnvironmentController
 {
     use ResolvesExecutionSources;
 
-    private const STATUS_COUNTS = "count() AS count, countIf(status_code < 400) AS `2xx`, countIf(status_code >= 400 AND status_code < 500) AS `4xx`, countIf(status_code >= 500) AS `5xx`";
+    private const STATUS_COUNTS = 'count() AS count, countIf(status_code < 400) AS `2xx`, countIf(status_code >= 400 AND status_code < 500) AS `4xx`, countIf(status_code >= 500) AS `5xx`';
 
     private const EMPTY_GRAPH = ['count' => 0, '2xx' => 0, '4xx' => 0, '5xx' => 0, 'min' => null, 'max' => null, 'avg' => null, 'p95' => null];
 

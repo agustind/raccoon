@@ -46,7 +46,11 @@ export default function UsersIndex(props: Props) {
     const { auth } = usePage<PageProps>().props;
     const env = auth.env!;
     const requests = useMemo(
-        () => props.graph.reduce((sum, point) => ({ authenticated: sum.authenticated + Number(point.authenticated), guest: sum.guest + Number(point.guest) }), { authenticated: 0, guest: 0 }),
+        () =>
+            props.graph.reduce(
+                (sum, point) => ({ authenticated: sum.authenticated + Number(point.authenticated), guest: sum.guest + Number(point.guest) }),
+                { authenticated: 0, guest: 0 },
+            ),
         [props.graph],
     );
 
@@ -55,7 +59,11 @@ export default function UsersIndex(props: Props) {
             <Panel>
                 <div className="grid grid-cols-2 gap-1.5">
                     <MetricCard label="Authenticated Users" value={formatCompact(props.totalUniqueUsers)} from={props.from} to={props.to}>
-                        <StackedBarChart data={props.graph} series={[{ key: 'unique', label: 'Users', color: COLORS.green }]} deployments={props.deployments} />
+                        <StackedBarChart
+                            data={props.graph}
+                            series={[{ key: 'unique', label: 'Users', color: COLORS.green }]}
+                            deployments={props.deployments}
+                        />
                     </MetricCard>
                     <MetricCard
                         label="Requests"
@@ -92,10 +100,38 @@ export default function UsersIndex(props: Props) {
                             </span>
                         ),
                     },
-                    { key: '2xx', label: '1/2/3XX', width: '80px', align: 'right', sortable: true, render: (row) => formatCompact(row.request_2xx_count) },
-                    { key: '4xx', label: '4XX', width: '60px', align: 'right', sortable: true, render: (row) => <AlertCount value={row.request_4xx_count} tone="warning" /> },
-                    { key: '5xx', label: '5XX', width: '60px', align: 'right', sortable: true, render: (row) => <AlertCount value={row.request_5xx_count} tone="danger" /> },
-                    { key: 'requests', label: 'Requests', width: '90px', align: 'right', sortable: true, render: (row) => formatCompact(row.request_count) },
+                    {
+                        key: '2xx',
+                        label: '1/2/3XX',
+                        width: '80px',
+                        align: 'right',
+                        sortable: true,
+                        render: (row) => formatCompact(row.request_2xx_count),
+                    },
+                    {
+                        key: '4xx',
+                        label: '4XX',
+                        width: '60px',
+                        align: 'right',
+                        sortable: true,
+                        render: (row) => <AlertCount value={row.request_4xx_count} tone="warning" />,
+                    },
+                    {
+                        key: '5xx',
+                        label: '5XX',
+                        width: '60px',
+                        align: 'right',
+                        sortable: true,
+                        render: (row) => <AlertCount value={row.request_5xx_count} tone="danger" />,
+                    },
+                    {
+                        key: 'requests',
+                        label: 'Requests',
+                        width: '90px',
+                        align: 'right',
+                        sortable: true,
+                        render: (row) => formatCompact(row.request_count),
+                    },
                     {
                         key: 'jobs',
                         label: 'Queued Jobs',
@@ -120,7 +156,14 @@ export default function UsersIndex(props: Props) {
                             </Link>
                         ),
                     },
-                    { key: 'last_seen', label: 'Last Seen', width: '90px', align: 'right', sortable: true, render: (row) => <span title={row.last_seen_at}>{shortTimeAgo(row.last_seen_at)}</span> },
+                    {
+                        key: 'last_seen',
+                        label: 'Last Seen',
+                        width: '90px',
+                        align: 'right',
+                        sortable: true,
+                        render: (row) => <span title={row.last_seen_at}>{shortTimeAgo(row.last_seen_at)}</span>,
+                    },
                 ]}
             />
             <Pagination paginator={props.users} />

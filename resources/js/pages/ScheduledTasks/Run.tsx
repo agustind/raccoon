@@ -1,6 +1,5 @@
 import { StatusText } from '@/components/rc/badges';
 import ExecutionDetail, { DateRow, YesNo } from '@/components/rc/commands-detail';
-import CopyMarkdownButton from '@/components/rc/copy-markdown-button';
 import { DeploymentRow } from '@/components/rc/execution-details';
 import { KeyValue } from '@/components/rc/key-value';
 import { CronForHumans } from '@/components/rc/scheduled-tasks-cron';
@@ -65,32 +64,27 @@ export default function ScheduledTasksRun(props: Props) {
                 { title: 'Scheduled Tasks', href: withPeriod(envUrl(env.id, 'scheduled-tasks')) },
                 { title: run.name, href: withPeriod(envUrl(env.id, `scheduled-tasks/${run.group}`)) },
             ]}
-            actions={
-                <CopyMarkdownButton
-                    filename={`scheduled-run-${run.trace_id}.md`}
-                    build={() =>
-                        executionToMarkdown({
-                            title: run.name,
-                            kind: 'scheduled task run',
-                            fields: [
-                                ['Status', run.status],
-                                ['Schedule', `${run.cron}${run.repeat_seconds ? ` every ${run.repeat_seconds}s` : ''} (${run.timezone})`],
-                                ['Date', `${run.timestamp} UTC`],
-                                ['Duration', formatDuration(run.duration)],
-                                ['Server', run.server],
-                                ['Peak memory', formatBytes(run.peak_memory_usage)],
-                                ['Trace ID', run.trace_id],
-                            ],
-                            deployment: props.deployment,
-                            summary: props.summary,
-                            executions: props.executions,
-                            currentId: run.trace_id,
-                            exceptions: props.exceptions,
-                            logs: props.logs,
-                            blocks: [{ title: 'Context', content: run.context }],
-                        })
-                    }
-                />
+            exportMarkdown={() =>
+                executionToMarkdown({
+                    title: run.name,
+                    kind: 'scheduled task run',
+                    fields: [
+                        ['Status', run.status],
+                        ['Schedule', `${run.cron}${run.repeat_seconds ? ` every ${run.repeat_seconds}s` : ''} (${run.timezone})`],
+                        ['Date', `${run.timestamp} UTC`],
+                        ['Duration', formatDuration(run.duration)],
+                        ['Server', run.server],
+                        ['Peak memory', formatBytes(run.peak_memory_usage)],
+                        ['Trace ID', run.trace_id],
+                    ],
+                    deployment: props.deployment,
+                    summary: props.summary,
+                    executions: props.executions,
+                    currentId: run.trace_id,
+                    exceptions: props.exceptions,
+                    logs: props.logs,
+                    blocks: [{ title: 'Context', content: run.context }],
+                })
             }
         >
             <ExecutionDetail

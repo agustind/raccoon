@@ -3,6 +3,7 @@
 namespace App\ClickHouse;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -156,7 +157,7 @@ class ClickHouse
         };
     }
 
-    private function throwIfFailed(\Illuminate\Http\Client\Response $response, string $sql): void
+    private function throwIfFailed(Response $response, string $sql): void
     {
         if ($response->failed()) {
             throw new RuntimeException('ClickHouse error: '.trim($response->body()).' SQL: '.substr($sql, 0, 500));

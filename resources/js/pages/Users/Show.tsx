@@ -60,7 +60,11 @@ export default function UsersShow(props: Props) {
     const byUser = (path: string) => withPeriod(envUrl(env.id, path, { user: user.id }));
 
     return (
-        <EnvironmentLayout title={title} breadcrumbs={[{ title: 'Users', href: withPeriod(envUrl(env.id, 'users')) }]} actions={<PeriodPicker period={props.period} />}>
+        <EnvironmentLayout
+            title={title}
+            breadcrumbs={[{ title: 'Users', href: withPeriod(envUrl(env.id, 'users')) }]}
+            actions={<PeriodPicker period={props.period} />}
+        >
             <Panel>
                 <div className="grid grid-cols-2 gap-1.5">
                     <Card className="p-5">
@@ -82,7 +86,11 @@ export default function UsersShow(props: Props) {
                                     { label: 'Exceptions', path: 'exceptions' },
                                     { label: 'Logs', path: 'logs' },
                                 ].map((item) => (
-                                    <Link key={item.path} href={byUser(item.path)} className="rounded-md border border-zinc-200 px-2 py-0.5 font-mono text-xs text-zinc-700 hover:bg-zinc-50">
+                                    <Link
+                                        key={item.path}
+                                        href={byUser(item.path)}
+                                        className="rounded-md border border-zinc-200 px-2 py-0.5 font-mono text-xs text-zinc-700 hover:bg-zinc-50"
+                                    >
                                         {item.label}
                                     </Link>
                                 ))}

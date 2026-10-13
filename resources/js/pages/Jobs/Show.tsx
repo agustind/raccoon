@@ -49,7 +49,11 @@ export default function JobsShow(props: Props) {
             {props.issues.length > 0 && (
                 <div className="mb-4 flex flex-wrap gap-2">
                     {props.issues.map((issue) => (
-                        <Link key={issue.ref} href={envUrl(env.id, `issues/${issue.ref}`)} className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-800">
+                        <Link
+                            key={issue.ref}
+                            href={envUrl(env.id, `issues/${issue.ref}`)}
+                            className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-800"
+                        >
                             <TriangleAlert className="size-4" /> #{issue.ref} {issue.title}
                         </Link>
                     ))}
@@ -58,7 +62,16 @@ export default function JobsShow(props: Props) {
 
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <JobCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} thresholdMs={props.threshold} />}
+                    {() => (
+                        <JobCharts
+                            graph={props.graph!}
+                            stats={props.stats!}
+                            deployments={props.deployments}
+                            from={props.from}
+                            to={props.to}
+                            thresholdMs={props.threshold}
+                        />
+                    )}
                 </Deferred>
             </Panel>
 
@@ -100,14 +113,29 @@ export default function JobsShow(props: Props) {
                             empty="No attempts found."
                             columns={[
                                 { key: 'date', label: 'Date', width: '200px', render: (row) => <Timestamp value={row.timestamp} /> },
-                                { key: 'connection', label: 'Connection', width: '100px', render: (row) => <span className="block truncate">{row.connection}</span> },
-                                { key: 'queue', label: 'Queue', width: '90px', render: (row) => <span className="block truncate" title={row.queue}>{row.queue}</span> },
+                                {
+                                    key: 'connection',
+                                    label: 'Connection',
+                                    width: '100px',
+                                    render: (row) => <span className="block truncate">{row.connection}</span>,
+                                },
+                                {
+                                    key: 'queue',
+                                    label: 'Queue',
+                                    width: '90px',
+                                    render: (row) => (
+                                        <span className="block truncate" title={row.queue}>
+                                            {row.queue}
+                                        </span>
+                                    ),
+                                },
                                 { key: 'attempt', label: 'Attempt', width: '70px', align: 'center', render: (row) => row.attempt },
                                 { key: 'status', label: 'Status', width: '100px', render: (row) => <StatusText status={row.status} /> },
                                 {
                                     key: 'exception',
                                     label: '',
-                                    render: (row) => row.exception_preview && <span className="block truncate text-rose-600">! {row.exception_preview}</span>,
+                                    render: (row) =>
+                                        row.exception_preview && <span className="block truncate text-rose-600">! {row.exception_preview}</span>,
                                 },
                                 {
                                     key: 'duration',
@@ -115,7 +143,9 @@ export default function JobsShow(props: Props) {
                                     width: '90px',
                                     align: 'right',
                                     render: (row) => (
-                                        <span className={props.threshold && row.duration >= props.threshold * 1000 ? 'text-rose-600' : undefined}>{formatDuration(row.duration)}</span>
+                                        <span className={props.threshold && row.duration >= props.threshold * 1000 ? 'text-rose-600' : undefined}>
+                                            {formatDuration(row.duration)}
+                                        </span>
                                     ),
                                 },
                             ]}

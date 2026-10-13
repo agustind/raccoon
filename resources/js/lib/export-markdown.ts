@@ -66,7 +66,9 @@ export function executionToMarkdown(data: ExecutionExport): string {
         push('## Stages', '');
         current.stages
             .filter((stage) => stage.duration > 0 || stage.spans.length > 0)
-            .forEach((stage) => push(`- ${stage.name}: ${formatDuration(stage.duration)}, ${stage.spans.length} ${stage.spans.length === 1 ? 'event' : 'events'}`));
+            .forEach((stage) =>
+                push(`- ${stage.name}: ${formatDuration(stage.duration)}, ${stage.spans.length} ${stage.spans.length === 1 ? 'event' : 'events'}`),
+            );
         push('');
     }
 

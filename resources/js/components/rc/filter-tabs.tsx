@@ -19,7 +19,10 @@ export default function FilterTabs({ param, value, options }: { param: string; v
                         key={option.label}
                         type="button"
                         onClick={() => visitWithQuery({ [param]: option.value })}
-                        className={cn('flex h-full items-center gap-1.5 rounded-md px-2.5 text-zinc-600 hover:text-zinc-900', active && 'bg-white text-zinc-900 shadow-xs')}
+                        className={cn(
+                            'flex h-full items-center gap-1.5 rounded-md px-2.5 text-zinc-600 hover:text-zinc-900',
+                            active && 'bg-white text-zinc-900 shadow-xs',
+                        )}
                     >
                         {option.label}
                         {option.count !== undefined && option.count !== null && option.count > 0 && (

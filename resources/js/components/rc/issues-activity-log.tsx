@@ -119,9 +119,18 @@ export default function ActivityLogItem({ log, environmentId, issueRef }: { log:
                         )}
                         {editing ? (
                             <div>
-                                <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} className="w-full rounded-md border border-zinc-200 px-3 py-2 outline-none" />
+                                <textarea
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    rows={3}
+                                    className="w-full rounded-md border border-zinc-200 px-3 py-2 outline-none"
+                                />
                                 <div className="mt-2 flex justify-end gap-2">
-                                    <button type="button" onClick={() => setEditing(false)} className="h-8 rounded-md border border-zinc-200 bg-white px-3 text-sm">
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditing(false)}
+                                        className="h-8 rounded-md border border-zinc-200 bg-white px-3 text-sm"
+                                    >
                                         Cancel
                                     </button>
                                     <button type="button" onClick={save} className="h-8 rounded-md bg-zinc-900 px-3 text-sm text-white">
@@ -138,19 +147,37 @@ export default function ActivityLogItem({ log, environmentId, issueRef }: { log:
                             {confirming ? (
                                 <>
                                     <span className="px-1 text-xs">Are you sure?</span>
-                                    <button type="button" onClick={() => setConfirming(false)} className="rounded-full px-2 py-0.5 text-xs hover:bg-zinc-100">
+                                    <button
+                                        type="button"
+                                        onClick={() => setConfirming(false)}
+                                        className="rounded-full px-2 py-0.5 text-xs hover:bg-zinc-100"
+                                    >
                                         Cancel
                                     </button>
-                                    <button type="button" onClick={() => router.delete(url, { preserveScroll: true })} className="rounded-full bg-rose-600 px-2 py-0.5 text-xs text-white">
+                                    <button
+                                        type="button"
+                                        onClick={() => router.delete(url, { preserveScroll: true })}
+                                        className="rounded-full bg-rose-600 px-2 py-0.5 text-xs text-white"
+                                    >
                                         Delete
                                     </button>
                                 </>
                             ) : (
                                 <>
-                                    <button type="button" title="Edit" onClick={() => setEditing(true)} className="flex size-6 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100">
+                                    <button
+                                        type="button"
+                                        title="Edit"
+                                        onClick={() => setEditing(true)}
+                                        className="flex size-6 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100"
+                                    >
                                         <Pencil className="size-3" />
                                     </button>
-                                    <button type="button" title="Delete" onClick={() => setConfirming(true)} className="flex size-6 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100">
+                                    <button
+                                        type="button"
+                                        title="Delete"
+                                        onClick={() => setConfirming(true)}
+                                        className="flex size-6 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100"
+                                    >
                                         <Trash2 className="size-3" />
                                     </button>
                                 </>
@@ -161,7 +188,9 @@ export default function ActivityLogItem({ log, environmentId, issueRef }: { log:
             )}
 
             {['comment_deleted', 'status_update_comment_deleted'].includes(log.event) && (
-                <div className="mt-3 ml-10 rounded-lg border border-zinc-200 bg-white/50 p-3 text-sm text-zinc-500 italic">This comment was deleted</div>
+                <div className="mt-3 ml-10 rounded-lg border border-zinc-200 bg-white/50 p-3 text-sm text-zinc-500 italic">
+                    This comment was deleted
+                </div>
             )}
         </div>
     );

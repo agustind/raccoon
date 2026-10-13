@@ -69,7 +69,7 @@ export default function ExceptionCard({ exception, className }: { exception: Exc
     const firstWithCode = trace.findIndex((frame) => frame.code && Object.keys(frame.code).length > 0);
 
     const copy = async () => {
-        await navigator.clipboard.writeText(toMarkdown(exception, trace));
+        await navigator.clipboard.writeText(exceptionToMarkdown(exception, trace));
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
@@ -79,7 +79,12 @@ export default function ExceptionCard({ exception, className }: { exception: Exc
             <div className="flex flex-col gap-3 p-5">
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                        <span className={cn('rounded px-1.5 py-0.5 font-mono text-xs text-white uppercase', exception.handled ? 'bg-amber-600' : 'bg-rose-600')}>
+                        <span
+                            className={cn(
+                                'rounded px-1.5 py-0.5 font-mono text-xs text-white uppercase',
+                                exception.handled ? 'bg-amber-600' : 'bg-rose-600',
+                            )}
+                        >
                             {exception.handled ? 'Handled' : 'Unhandled'}
                         </span>
                         {exception.code !== '0' && <Pill>{exception.code}</Pill>}
@@ -128,7 +133,12 @@ export default function ExceptionCard({ exception, className }: { exception: Exc
                         ) : (
                             <Fragment key={index}>
                                 {group.frames.map((frame) => (
-                                    <AppFrame key={frame.index} frame={frame} caller={trace[frame.index + 1]} defaultExpanded={frame.index === firstWithCode} />
+                                    <AppFrame
+                                        key={frame.index}
+                                        frame={frame}
+                                        caller={trace[frame.index + 1]}
+                                        defaultExpanded={frame.index === firstWithCode}
+                                    />
                                 ))}
                             </Fragment>
                         ),
@@ -162,7 +172,11 @@ function AppFrame({ frame, caller, defaultExpanded }: { frame: IndexedFrame; cal
             >
                 <span className={cn('size-2 shrink-0 rounded-full', expanded ? 'bg-zinc-400' : 'bg-zinc-300')} />
                 <div className="flex min-w-0 flex-1 items-center justify-between gap-6">
-                    {caller ? <Source source={caller.source} className="text-[13px]" /> : <span className="font-mono text-[13px] text-zinc-500">Entrypoint</span>}
+                    {caller ? (
+                        <Source source={caller.source} className="text-[13px]" />
+                    ) : (
+                        <span className="font-mono text-[13px] text-zinc-500">Entrypoint</span>
+                    )}
                     <FileName file={frame.file} />
                 </div>
                 {hasCode && <ToggleButton expanded={expanded} />}
@@ -191,7 +205,11 @@ function VendorFrames({ frames, trace }: { frames: IndexedFrame[]; trace: TraceF
 
                         return (
                             <div key={frame.index} className="flex h-11 items-center justify-between gap-6 px-3">
-                                {caller ? <Source source={caller.source} className="text-xs" /> : <span className="font-mono text-xs text-zinc-500">Entrypoint</span>}
+                                {caller ? (
+                                    <Source source={caller.source} className="text-xs" />
+                                ) : (
+                                    <span className="font-mono text-xs text-zinc-500">Entrypoint</span>
+                                )}
                                 <FileName file={frame.file} />
                             </div>
                         );
@@ -204,7 +222,12 @@ function VendorFrames({ frames, trace }: { frames: IndexedFrame[]; trace: TraceF
 
 function ToggleButton({ expanded }: { expanded: boolean }) {
     return (
-        <span className={cn('flex size-6 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-white', expanded ? 'text-emerald-500' : 'text-zinc-500')}>
+        <span
+            className={cn(
+                'flex size-6 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-white',
+                expanded ? 'text-emerald-500' : 'text-zinc-500',
+            )}
+        >
             {expanded ? <ChevronsDownUp className="size-3" /> : <ChevronsUpDown className="size-3" />}
         </span>
     );
@@ -266,7 +289,10 @@ function CodeSnippet({ code, highlight }: { code: Record<string, string>; highli
             {lines.map(([number, text]) => (
                 <div
                     key={number}
-                    className={cn('flex min-w-max px-4 py-1.5', number === highlight ? 'bg-rose-100' : (number - first) % 2 === 0 ? 'bg-white' : 'bg-zinc-50')}
+                    className={cn(
+                        'flex min-w-max px-4 py-1.5',
+                        number === highlight ? 'bg-rose-100' : (number - first) % 2 === 0 ? 'bg-white' : 'bg-zinc-50',
+                    )}
                 >
                     <span className={cn('w-12 shrink-0 select-none', number === highlight ? 'text-zinc-900' : 'text-zinc-400')}>{number}</span>
                     <span className="whitespace-pre">{highlightPhp(text)}</span>
@@ -276,7 +302,8 @@ function CodeSnippet({ code, highlight }: { code: Record<string, string>; highli
     );
 }
 
-const PHP_TOKENS = /(\/\/.*$|#.*$|\/\*.*?\*\/|^\s*\*.*$|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|\$[A-Za-z_][A-Za-z0-9_]*|\b(?:function|fn|return|if|else|elseif|foreach|for|while|try|catch|finally|throw|new|class|public|protected|private|static|use|namespace|array|null|true|false|match|default|case|switch|break|continue|instanceof|as|void|string|int|bool|float|callable|self|parent)\b|\b\d+\b)/g;
+const PHP_TOKENS =
+    /(\/\/.*$|#.*$|\/\*.*?\*\/|^\s*\*.*$|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|\$[A-Za-z_][A-Za-z0-9_]*|\b(?:function|fn|return|if|else|elseif|foreach|for|while|try|catch|finally|throw|new|class|public|protected|private|static|use|namespace|array|null|true|false|match|default|case|switch|break|continue|instanceof|as|void|string|int|bool|float|callable|self|parent)\b|\b\d+\b)/g;
 
 /** Small PHP highlighter: comments, strings, variables, keywords, numbers. */
 function highlightPhp(text: string): ReactNode[] {
@@ -302,7 +329,7 @@ function highlightPhp(text: string): ReactNode[] {
     });
 }
 
-function toMarkdown(exception: ExceptionDetails, trace: TraceFrame[]): string {
+export function exceptionToMarkdown(exception: ExceptionDetails, trace: TraceFrame[]): string {
     const lines = [`# ${exception.class}`, '', exception.message, '', `${exception.file}:${exception.line}`, ''];
 
     if (exception.laravel_version || exception.php_version) {
@@ -310,7 +337,23 @@ function toMarkdown(exception: ExceptionDetails, trace: TraceFrame[]): string {
     }
 
     lines.push('## Stack trace', '', '```');
-    trace.forEach((frame, index) => lines.push(`#${index} ${frame.file}${trace[index + 1]?.source ? ` ${trace[index + 1].source}` : ''}`));
+    let vendorRun = 0;
+    const flushVendor = () => {
+        if (vendorRun > 0) lines.push(`... ${vendorRun} vendor ${vendorRun === 1 ? 'frame' : 'frames'}`);
+        vendorRun = 0;
+    };
+    trace.forEach((frame, index) => {
+        // App frames matter for debugging; collapse framework internals.
+        if (frame.file.startsWith('vendor/') && index > 0) {
+            vendorRun++;
+
+            return;
+        }
+
+        flushVendor();
+        lines.push(`#${index} ${frame.file}${trace[index + 1]?.source ? ` ${trace[index + 1].source}` : ''}`);
+    });
+    flushVendor();
     lines.push('```');
 
     const withCode = trace.find((frame) => frame.code && Object.keys(frame.code).length > 0);

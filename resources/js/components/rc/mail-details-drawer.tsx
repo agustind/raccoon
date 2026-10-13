@@ -88,11 +88,20 @@ export default function MessageDetailsDrawer<T extends SendRow>({
             {!details && !failed && <div className="mt-4 h-96 animate-pulse rounded-lg bg-zinc-100" />}
             {details && (
                 <div className="mt-2 space-y-4">
-                    <MessageCharts label={label} graph={details.graph} stats={details.stats} deployments={details.deployments} from={details.from} to={details.to} className="grid gap-1.5" />
+                    <MessageCharts
+                        label={label}
+                        graph={details.graph}
+                        stats={details.stats}
+                        deployments={details.deployments}
+                        from={details.from}
+                        to={details.to}
+                        className="grid gap-1.5"
+                    />
 
                     <div className="flex items-center justify-between">
                         <h3 className="text-base font-medium">
-                            Latest <span className="ml-1 rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">{formatNumber(details.stats.count)}</span>
+                            Latest{' '}
+                            <span className="ml-1 rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">{formatNumber(details.stats.count)}</span>
                         </h3>
                         <Link href={href} className="flex items-center gap-1 font-mono text-xs text-zinc-600 uppercase hover:text-zinc-900">
                             View all <ArrowUpRight className="size-3.5" />
@@ -106,14 +115,21 @@ export default function MessageDetailsDrawer<T extends SendRow>({
                                 <>
                                     <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
                                         <Timestamp value={row.timestamp} />
-                                        <span className={row.failed ? 'text-rose-600' : undefined}>{row.failed ? 'Failed · ' : ''}{formatDuration(row.duration)}</span>
+                                        <span className={row.failed ? 'text-rose-600' : undefined}>
+                                            {row.failed ? 'Failed · ' : ''}
+                                            {formatDuration(row.duration)}
+                                        </span>
                                     </div>
                                     <div className="mt-1.5 flex min-w-0 items-center gap-3 font-mono text-[13px]">{renderRow(row)}</div>
                                 </>
                             );
 
                             return row.execution_url ? (
-                                <Link key={`${row.trace_id}:${row.timestamp}`} href={envUrl(auth.env!.id, row.execution_url)} className="block rounded-lg border border-zinc-200 bg-white px-4 py-3 hover:border-zinc-300">
+                                <Link
+                                    key={`${row.trace_id}:${row.timestamp}`}
+                                    href={envUrl(auth.env!.id, row.execution_url)}
+                                    className="block rounded-lg border border-zinc-200 bg-white px-4 py-3 hover:border-zinc-300"
+                                >
                                     {body}
                                 </Link>
                             ) : (

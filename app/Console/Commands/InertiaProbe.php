@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Http\Kernel;
@@ -71,7 +72,7 @@ class InertiaProbe extends Command
     {
         $server = [
             'HTTP_X_INERTIA' => 'true',
-            'HTTP_X_INERTIA_VERSION' => (string) app(\App\Http\Middleware\HandleInertiaRequests::class)->version(Request::create('/')),
+            'HTTP_X_INERTIA_VERSION' => (string) app(HandleInertiaRequests::class)->version(Request::create('/')),
             'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
             'HTTP_ACCEPT' => 'text/html, application/xhtml+xml',
         ];

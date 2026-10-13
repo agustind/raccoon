@@ -32,7 +32,16 @@ export default function QueryDetailsDrawer({ group, onClose }: { group: string |
             )}
             label="Calls"
             summary={(details) => <SqlBlock sql={details.query.sql} className="max-h-48 rounded-lg border border-zinc-200 bg-white p-4" />}
-            charts={(details) => <QueryCharts graph={details.graph} stats={details.stats} deployments={details.deployments} from={details.from} to={details.to} className="grid gap-1.5" />}
+            charts={(details) => (
+                <QueryCharts
+                    graph={details.graph}
+                    stats={details.stats}
+                    deployments={details.deployments}
+                    from={details.from}
+                    to={details.to}
+                    className="grid gap-1.5"
+                />
+            )}
             count={(details) => details.stats.count}
             calls={(details) => details.calls.data}
             renderCall={(call) => (

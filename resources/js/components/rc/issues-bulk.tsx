@@ -17,7 +17,12 @@ export function IssueSelectionBar({ count, onClear, onAction }: { count: number;
     return (
         <div className="fixed bottom-8 left-1/2 z-40 flex h-10 w-1/2 min-w-96 -translate-x-1/2 items-center justify-between rounded-full border border-blue-500 bg-blue-600 pr-1 pl-2 shadow-lg">
             <div className="flex items-center gap-2">
-                <button type="button" onClick={onClear} title="Clear" className="flex size-6 items-center justify-center rounded-full border border-white/5 bg-white/10 text-blue-100 hover:bg-white/20 hover:text-white">
+                <button
+                    type="button"
+                    onClick={onClear}
+                    title="Clear"
+                    className="flex size-6 items-center justify-center rounded-full border border-white/5 bg-white/10 text-blue-100 hover:bg-white/20 hover:text-white"
+                >
                     <X className="size-3" />
                 </button>
                 <p className="text-sm font-semibold text-white">
@@ -27,7 +32,11 @@ export function IssueSelectionBar({ count, onClear, onAction }: { count: number;
             <div className="flex items-center gap-1">
                 <BarButton icon={<CircleCheck className="size-3.5 text-blue-200" />} label="Status" onClick={() => onAction('status')} />
                 <BarButton icon={<UserRound className="size-3.5 text-blue-200" />} label="Assign" onClick={() => onAction('assignee')} />
-                <BarButton icon={<PrioritySymbol priority={3} className="size-3 [&_rect]:fill-blue-200" />} label="Priority" onClick={() => onAction('priority')} />
+                <BarButton
+                    icon={<PrioritySymbol priority={3} className="size-3 [&_rect]:fill-blue-200" />}
+                    label="Priority"
+                    onClick={() => onAction('priority')}
+                />
             </div>
         </div>
     );
@@ -35,7 +44,11 @@ export function IssueSelectionBar({ count, onClear, onAction }: { count: number;
 
 function BarButton({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
     return (
-        <button type="button" onClick={onClick} className="inline-flex h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 text-sm text-white hover:bg-white/20">
+        <button
+            type="button"
+            onClick={onClick}
+            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 text-sm text-white hover:bg-white/20"
+        >
             {icon}
             {label}
         </button>
@@ -94,7 +107,8 @@ export function IssueBulkActionsModal({
             envUrl(currentEnvironmentId, 'issues/bulk-update'),
             {
                 issues: selected,
-                ...(enabled.includes('status') && (status === 'resolve_on_deploy' ? { resolve_on_deploy_environment_id: environmentId } : { status })),
+                ...(enabled.includes('status') &&
+                    (status === 'resolve_on_deploy' ? { resolve_on_deploy_environment_id: environmentId } : { status })),
                 ...(enabled.includes('status') && comment.trim() ? { comment } : {}),
                 ...(enabled.includes('assignee') ? { user_id: assignee } : {}),
                 ...(enabled.includes('priority') ? { priority } : {}),
@@ -130,7 +144,9 @@ export function IssueBulkActionsModal({
                         </SelectContent>
                     </Select>
                     {error && <p className="text-sm text-rose-600">{error}</p>}
-                    {status === 'resolve_on_deploy' && <EnvironmentSelect environments={environments} value={environmentId} onChange={setEnvironmentId} />}
+                    {status === 'resolve_on_deploy' && (
+                        <EnvironmentSelect environments={environments} value={environmentId} onChange={setEnvironmentId} />
+                    )}
                     <textarea
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
@@ -141,7 +157,12 @@ export function IssueBulkActionsModal({
                 </Section>
 
                 <Section label="Assignee" checked={enabled.includes('assignee')} onChange={(on) => toggle('assignee', on)}>
-                    <AssigneePicker value={assignee} users={users} onChange={setAssignee} className="h-10 w-full rounded-md border border-zinc-200 px-3" />
+                    <AssigneePicker
+                        value={assignee}
+                        users={users}
+                        onChange={setAssignee}
+                        className="h-10 w-full rounded-md border border-zinc-200 px-3"
+                    />
                 </Section>
 
                 <Section label="Priority" checked={enabled.includes('priority')} onChange={(on) => toggle('priority', on)}>
@@ -180,7 +201,17 @@ export function IssueBulkActionsModal({
     );
 }
 
-function Section({ label, checked, onChange, children }: { label: string; checked: boolean; onChange: (checked: boolean) => void; children: ReactNode }) {
+function Section({
+    label,
+    checked,
+    onChange,
+    children,
+}: {
+    label: string;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    children: ReactNode;
+}) {
     const id = `issue-bulk-${label.toLowerCase()}`;
 
     return (

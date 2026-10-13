@@ -4,6 +4,7 @@ import Deferred from '@/components/rc/deferred';
 import FilterTabs from '@/components/rc/filter-tabs';
 import { CursorPagination } from '@/components/rc/pagination';
 import PeriodPicker from '@/components/rc/period-picker';
+import { RequestCharts, type RequestStats } from '@/components/rc/request-charts';
 import { Panel, SectionHeader } from '@/components/rc/section';
 import Timestamp from '@/components/rc/timestamp';
 import UserFilter from '@/components/rc/user-filter';
@@ -13,7 +14,6 @@ import { envUrl, withPeriod } from '@/lib/rc';
 import type { CursorPaginator, DeploymentBucket, GraphPoint, IssueLink, PageProps, PeriodProps } from '@/types/raccoon';
 import { Link, usePage } from '@inertiajs/react';
 import { Globe, TriangleAlert } from 'lucide-react';
-import { RequestCharts, type RequestStats } from '@/components/rc/request-charts';
 
 interface RequestRow {
     timestamp: string;
@@ -66,7 +66,11 @@ export default function RequestsRoute(props: Props) {
             {props.issues.length > 0 && (
                 <div className="mb-4 flex flex-wrap gap-2">
                     {props.issues.map((issue) => (
-                        <Link key={issue.ref} href={envUrl(env.id, `issues/${issue.ref}`)} className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-800">
+                        <Link
+                            key={issue.ref}
+                            href={envUrl(env.id, `issues/${issue.ref}`)}
+                            className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-800"
+                        >
                             <TriangleAlert className="size-4" /> #{issue.ref} {issue.title}
                         </Link>
                     ))}
@@ -75,7 +79,16 @@ export default function RequestsRoute(props: Props) {
 
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <RequestCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} thresholdMs={props.threshold} />}
+                    {() => (
+                        <RequestCharts
+                            graph={props.graph!}
+                            stats={props.stats!}
+                            deployments={props.deployments}
+                            from={props.from}
+                            to={props.to}
+                            thresholdMs={props.threshold}
+                        />
+                    )}
                 </Deferred>
             </Panel>
 
@@ -127,7 +140,13 @@ export default function RequestsRoute(props: Props) {
                                         </span>
                                     ),
                                 },
-                                { key: 'status', label: 'Status', width: '70px', align: 'right', render: (row) => <StatusCode code={row.status_code} /> },
+                                {
+                                    key: 'status',
+                                    label: 'Status',
+                                    width: '70px',
+                                    align: 'right',
+                                    render: (row) => <StatusCode code={row.status_code} />,
+                                },
                                 { key: 'duration', label: 'Duration', width: '90px', align: 'right', render: (row) => formatDuration(row.duration) },
                             ]}
                         />

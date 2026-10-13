@@ -2,11 +2,11 @@ import { MethodBadge, StatusCode } from '@/components/rc/badges';
 import DataTable from '@/components/rc/data-table';
 import Deferred from '@/components/rc/deferred';
 import FilterTabs from '@/components/rc/filter-tabs';
-import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
 import { CursorPagination } from '@/components/rc/pagination';
 import PeriodPicker from '@/components/rc/period-picker';
 import { RequestCharts, type RequestStats } from '@/components/rc/request-charts';
 import { Panel, SectionHeader } from '@/components/rc/section';
+import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
 import Timestamp from '@/components/rc/timestamp';
 import EnvironmentLayout from '@/layouts/environment-layout';
 import { formatDuration, formatNumber } from '@/lib/format';
@@ -50,7 +50,9 @@ export default function OutgoingRequestsShow(props: Props) {
         >
             <Panel>
                 <Deferred data={['graph', 'stats', 'deployments']} className="h-80">
-                    {() => <RequestCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />}
+                    {() => (
+                        <RequestCharts graph={props.graph!} stats={props.stats!} deployments={props.deployments} from={props.from} to={props.to} />
+                    )}
                 </Deferred>
             </Panel>
 

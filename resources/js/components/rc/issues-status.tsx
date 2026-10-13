@@ -61,10 +61,20 @@ export function StatusMenuItems({
     return (
         <>
             {(status !== 'open' || pendingDeploy) && (
-                <StatusItem icon={<CircleDot className="size-3.5 text-blue-600" />} label="Open" description="Active issue affecting users" onClick={() => onAction('open')} />
+                <StatusItem
+                    icon={<CircleDot className="size-3.5 text-blue-600" />}
+                    label="Open"
+                    description="Active issue affecting users"
+                    onClick={() => onAction('open')}
+                />
             )}
             {status !== 'resolved' && (
-                <StatusItem icon={<CircleCheck className="size-3.5 text-emerald-500" />} label="Resolve now" description="Reopen on reoccurrence" onClick={() => onAction('resolve')} />
+                <StatusItem
+                    icon={<CircleCheck className="size-3.5 text-emerald-500" />}
+                    label="Resolve now"
+                    description="Reopen on reoccurrence"
+                    onClick={() => onAction('resolve')}
+                />
             )}
             {status === 'open' && !pendingDeploy && (
                 <StatusItem
@@ -75,13 +85,31 @@ export function StatusMenuItems({
                 />
             )}
             {status !== 'ignored' && (
-                <StatusItem icon={<Ban className="size-3.5 text-zinc-400" />} label="Ignore" description="Resolve and ignore all future reoccurrences" onClick={() => onAction('ignore')} muted />
+                <StatusItem
+                    icon={<Ban className="size-3.5 text-zinc-400" />}
+                    label="Ignore"
+                    description="Resolve and ignore all future reoccurrences"
+                    onClick={() => onAction('ignore')}
+                    muted
+                />
             )}
         </>
     );
 }
 
-function StatusItem({ icon, label, description, onClick, muted = false }: { icon: React.ReactNode; label: string; description: string; onClick: () => void; muted?: boolean }) {
+function StatusItem({
+    icon,
+    label,
+    description,
+    onClick,
+    muted = false,
+}: {
+    icon: React.ReactNode;
+    label: string;
+    description: string;
+    onClick: () => void;
+    muted?: boolean;
+}) {
     return (
         <DropdownMenuItem onSelect={onClick} className="flex items-start gap-3 p-3">
             <span className="mt-0.5">{icon}</span>
@@ -145,13 +173,21 @@ export function StatusModal({
             <DialogContent className="max-w-xl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        {action && <IssueStatusIcon status={action === 'resolve' ? 'resolved' : action === 'ignore' ? 'ignored' : 'open'} pendingDeploy={action === 'resolve_on_deploy'} className="size-5" />}
+                        {action && (
+                            <IssueStatusIcon
+                                status={action === 'resolve' ? 'resolved' : action === 'ignore' ? 'ignored' : 'open'}
+                                pendingDeploy={action === 'resolve_on_deploy'}
+                                className="size-5"
+                            />
+                        )}
                         {title}
                     </DialogTitle>
                     <DialogDescription>{action ? DESCRIPTIONS[action] : ''}</DialogDescription>
                 </DialogHeader>
 
-                {action === 'resolve_on_deploy' && <EnvironmentSelect environments={environments} value={environmentId} onChange={setEnvironmentId} />}
+                {action === 'resolve_on_deploy' && (
+                    <EnvironmentSelect environments={environments} value={environmentId} onChange={setEnvironmentId} />
+                )}
 
                 <label className="block">
                     <span className="mb-2 flex items-center justify-between text-sm font-medium">
@@ -170,7 +206,12 @@ export function StatusModal({
                     <button type="button" onClick={onClose} className="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm hover:bg-zinc-50">
                         Cancel
                     </button>
-                    <button type="button" onClick={submit} disabled={processing} className="h-9 rounded-md bg-zinc-900 px-3 text-sm text-white hover:bg-zinc-800 disabled:opacity-60">
+                    <button
+                        type="button"
+                        onClick={submit}
+                        disabled={processing}
+                        className="h-9 rounded-md bg-zinc-900 px-3 text-sm text-white hover:bg-zinc-800 disabled:opacity-60"
+                    >
                         {title}
                         {comment.trim() ? ' with comment' : ''}
                     </button>
@@ -180,7 +221,15 @@ export function StatusModal({
     );
 }
 
-export function EnvironmentSelect({ environments, value, onChange }: { environments: IssueEnvironment[]; value: string; onChange: (id: string) => void }) {
+export function EnvironmentSelect({
+    environments,
+    value,
+    onChange,
+}: {
+    environments: IssueEnvironment[];
+    value: string;
+    onChange: (id: string) => void;
+}) {
     return (
         <label className="block">
             <span className="mb-2 block text-sm font-medium">Environment</span>

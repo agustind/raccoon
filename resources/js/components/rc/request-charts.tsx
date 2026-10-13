@@ -4,14 +4,27 @@ import { COLORS, DurationLineChart, MetricCard, StackedBarChart } from './charts
 
 export type RequestStats = DurationStats & { count: number; '2xx': number; '4xx': number; '5xx': number };
 
-
 export const STATUS_SERIES = [
     { key: '2xx', label: '1/2/3XX', color: COLORS.ok },
     { key: '4xx', label: '4XX', color: COLORS.warn },
     { key: '5xx', label: '5XX', color: COLORS.error },
 ];
 
-export function RequestCharts({ graph, stats, deployments, from, to, thresholdMs }: { graph: GraphPoint[]; stats: RequestStats; deployments?: DeploymentBucket[]; from: string; to: string; thresholdMs?: number | null }) {
+export function RequestCharts({
+    graph,
+    stats,
+    deployments,
+    from,
+    to,
+    thresholdMs,
+}: {
+    graph: GraphPoint[];
+    stats: RequestStats;
+    deployments?: DeploymentBucket[];
+    from: string;
+    to: string;
+    thresholdMs?: number | null;
+}) {
     return (
         <div className="grid grid-cols-2 gap-1.5">
             <MetricCard
@@ -27,7 +40,9 @@ export function RequestCharts({ graph, stats, deployments, from, to, thresholdMs
                 label="Duration"
                 value={formatDurationRange(stats.min, stats.max)}
                 legend={[
-                    ...(thresholdMs !== undefined ? [{ label: 'Threshold', color: COLORS.threshold, value: thresholdMs ? formatDuration(thresholdMs * 1000) : 'N/A' }] : []),
+                    ...(thresholdMs !== undefined
+                        ? [{ label: 'Threshold', color: COLORS.threshold, value: thresholdMs ? formatDuration(thresholdMs * 1000) : 'N/A' }]
+                        : []),
                     { label: 'Avg', color: COLORS.avg, value: formatDuration(stats.avg) },
                     { label: 'P95', color: COLORS.p95, value: formatDuration(stats.p95) },
                 ]}
@@ -39,4 +54,3 @@ export function RequestCharts({ graph, stats, deployments, from, to, thresholdMs
         </div>
     );
 }
-

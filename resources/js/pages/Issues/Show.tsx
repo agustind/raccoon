@@ -1,14 +1,22 @@
 import { StatusCode } from '@/components/rc/badges';
 import DataTable, { type Column } from '@/components/rc/data-table';
 import Deferred from '@/components/rc/deferred';
-import ExceptionCard, { type ExceptionDetails } from '@/components/rc/exceptions-card';
+import ExceptionCard, { type ExceptionDetails, exceptionToMarkdown } from '@/components/rc/exceptions-card';
 import ShortTimeAgo from '@/components/rc/exceptions-time-ago';
 import ActivityLogItem, { type ActivityLog } from '@/components/rc/issues-activity-log';
-import { AssigneePicker, Avatar, type Member, PriorityPicker } from '@/components/rc/issues-controls';
-import { EnvironmentDot, type IssueEnvironment, IssueStatusIcon, issueUrl, type StatusAction, StatusMenuItems, StatusModal } from '@/components/rc/issues-status';
-import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
+import { AssigneePicker, Avatar, type Member, PRIORITIES, PriorityPicker } from '@/components/rc/issues-controls';
+import {
+    EnvironmentDot,
+    type IssueEnvironment,
+    IssueStatusIcon,
+    issueUrl,
+    type StatusAction,
+    StatusMenuItems,
+    StatusModal,
+} from '@/components/rc/issues-status';
 import { Pagination } from '@/components/rc/pagination';
 import { Card } from '@/components/rc/section';
+import SourceLink, { type ExecutionSource } from '@/components/rc/source-link';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import EnvironmentLayout from '@/layouts/environment-layout';
@@ -89,16 +97,28 @@ export default function IssuesShow(props: Props) {
     const listPath = `issues/${issue.type === 'exception' ? 'exceptions' : 'performance'}`;
     const lastStatusLog = [...issue.activityLogs]
         .reverse()
-        .find((log) => ['status_updated', 'status_updated_with_comment', 'status_update_comment_updated', 'status_update_comment_deleted', 'resolved_on_deploy'].includes(log.event));
+        .find((log) =>
+            [
+                'status_updated',
+                'status_updated_with_comment',
+                'status_update_comment_updated',
+                'status_update_comment_deleted',
+                'resolved_on_deploy',
+            ].includes(log.event),
+        );
 
     return (
         <EnvironmentLayout
             title={`Issue ${issue.ref}: ${issue.title}`}
             heading={<span className="block text-3xl whitespace-normal">{issue.title}</span>}
             breadcrumbs={[
-                { title: issue.status[0].toUpperCase() + issue.status.slice(1), href: envUrl(environment.id, listPath, { filter: issue.status === 'open' ? null : issue.status }) },
+                {
+                    title: issue.status[0].toUpperCase() + issue.status.slice(1),
+                    href: envUrl(environment.id, listPath, { filter: issue.status === 'open' ? null : issue.status }),
+                },
                 { title: String(issue.ref) },
             ]}
+            exportMarkdown={() => issueToMarkdown(props)}
         >
             <div className="flex gap-8">
                 <div className="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)] content-start gap-8">
@@ -130,7 +150,15 @@ export default function IssuesShow(props: Props) {
                             <div className="absolute top-6 bottom-40 left-[27px] border-l border-dashed border-zinc-300" />
                             <div className="relative grid gap-5">
                                 <ActivityLogItem
-                                    log={{ id: 0, event: 'issue_created', payload: {}, user: null, user_id: null, timestamp: issue.created_at, created_at: issue.created_at }}
+                                    log={{
+                                        id: 0,
+                                        event: 'issue_created',
+                                        payload: {},
+                                        user: null,
+                                        user_id: null,
+                                        timestamp: issue.created_at,
+                                        created_at: issue.created_at,
+                                    }}
                                     environmentId={environment.id}
                                     issueRef={issue.ref}
                                 />
@@ -157,18 +185,29 @@ export default function IssuesShow(props: Props) {
                                                 : issue.status}
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end" className="w-72">
-                                            <StatusMenuItems status={issue.status} pendingDeploy={Boolean(issue.resolve_on_deploy_environment_id)} onAction={setStatusAction} />
+                                            <StatusMenuItems
+                                                status={issue.status}
+                                                pendingDeploy={Boolean(issue.resolve_on_deploy_environment_id)}
+                                                onAction={setStatusAction}
+                                            />
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </SidebarRow>
                                 <SidebarRow label="Priority">
-                                    <PriorityPicker value={issue.priority} onChange={(priority) => router.patch(issueUrl(environment.id, issue.ref), { priority }, { preserveScroll: true })} />
+                                    <PriorityPicker
+                                        value={issue.priority}
+                                        onChange={(priority) =>
+                                            router.patch(issueUrl(environment.id, issue.ref), { priority }, { preserveScroll: true })
+                                        }
+                                    />
                                 </SidebarRow>
                                 <SidebarRow label="Assignee">
                                     <AssigneePicker
                                         value={issue.user?.id ?? null}
                                         users={props.users}
-                                        onChange={(user_id) => router.patch(issueUrl(environment.id, issue.ref), { user_id }, { preserveScroll: true })}
+                                        onChange={(user_id) =>
+                                            router.patch(issueUrl(environment.id, issue.ref), { user_id }, { preserveScroll: true })
+                                        }
                                     />
                                 </SidebarRow>
                             </SidebarRows>
@@ -206,7 +245,12 @@ export default function IssuesShow(props: Props) {
                                             {env.name}
                                         </span>
                                         {count > 0 ? (
-                                            <Link href={envUrl(env.id, `${GROUP_PAGES[issue.issueable_type]}/${group}`, { period: `${props.environment_stats_period}d` })} className="flex items-center gap-2 uppercase">
+                                            <Link
+                                                href={envUrl(env.id, `${GROUP_PAGES[issue.issueable_type]}/${group}`, {
+                                                    period: `${props.environment_stats_period}d`,
+                                                })}
+                                                className="flex items-center gap-2 uppercase"
+                                            >
                                                 {formatCompact(count)}
                                                 <ArrowUpRight className="size-4 text-zinc-600" />
                                             </Link>
@@ -223,7 +267,13 @@ export default function IssuesShow(props: Props) {
                 </aside>
             </div>
 
-            <StatusModal issueRef={issue.ref} action={statusAction} onClose={() => setStatusAction(null)} environments={props.environments} currentEnvironmentId={environment.id} />
+            <StatusModal
+                issueRef={issue.ref}
+                action={statusAction}
+                onClose={() => setStatusAction(null)}
+                environments={props.environments}
+                currentEnvironmentId={environment.id}
+            />
         </EnvironmentLayout>
     );
 }
@@ -284,7 +334,12 @@ function SubscribeButton({ subscribed, url }: { subscribed: boolean; url: string
 
 function StatusCard({ status, log }: { status: Issue['status']; log: ActivityLog }) {
     return (
-        <div className={cn('space-y-3 rounded-xl border p-4', status === 'resolved' ? 'border-emerald-400 bg-emerald-50 text-emerald-900' : 'border-blue-300 bg-blue-50')}>
+        <div
+            className={cn(
+                'space-y-3 rounded-xl border p-4',
+                status === 'resolved' ? 'border-emerald-400 bg-emerald-50 text-emerald-900' : 'border-blue-300 bg-blue-50',
+            )}
+        >
             <div className="flex items-center gap-2">
                 <IssueStatusIcon status={status} className="size-5" />
                 <h2 className="text-lg font-semibold capitalize">{status}</h2>
@@ -316,19 +371,32 @@ function Description({ issue, environmentId }: { issue: Issue; environmentId: st
                         key={key}
                         type="button"
                         onClick={() => setTab(key)}
-                        className={cn('-mb-px border-b-2 px-2 py-3 text-sm capitalize', tab === key ? 'border-zinc-900 text-zinc-900' : 'border-transparent text-zinc-500 hover:text-zinc-800')}
+                        className={cn(
+                            '-mb-px border-b-2 px-2 py-3 text-sm capitalize',
+                            tab === key ? 'border-zinc-900 text-zinc-900' : 'border-transparent text-zinc-500 hover:text-zinc-800',
+                        )}
                     >
                         {key}
                     </button>
                 ))}
                 {dirty && (
                     <div className="ml-auto flex gap-2">
-                        <button type="button" onClick={() => setText(issue.description)} className="h-7 rounded-md border border-zinc-200 px-2 text-xs">
+                        <button
+                            type="button"
+                            onClick={() => setText(issue.description)}
+                            className="h-7 rounded-md border border-zinc-200 px-2 text-xs"
+                        >
                             Cancel
                         </button>
                         <button
                             type="button"
-                            onClick={() => router.patch(issueUrl(environmentId, issue.ref), { description: text }, { preserveScroll: true, onSuccess: () => setTab('preview') })}
+                            onClick={() =>
+                                router.patch(
+                                    issueUrl(environmentId, issue.ref),
+                                    { description: text },
+                                    { preserveScroll: true, onSuccess: () => setTab('preview') },
+                                )
+                            }
                             className="h-7 rounded-md bg-zinc-900 px-2 text-xs text-white"
                         >
                             Save
@@ -345,7 +413,9 @@ function Description({ issue, environmentId }: { issue: Issue; environmentId: st
                     className="block w-full resize-y px-[18px] py-[15px] font-mono text-[13px] outline-none placeholder:text-zinc-400"
                 />
             ) : (
-                <div className="px-[18px] py-[15px] text-sm whitespace-pre-wrap text-zinc-700">{issue.description || <span className="text-zinc-400">No description</span>}</div>
+                <div className="px-[18px] py-[15px] text-sm whitespace-pre-wrap text-zinc-700">
+                    {issue.description || <span className="text-zinc-400">No description</span>}
+                </div>
             )}
         </Card>
     );
@@ -363,9 +433,16 @@ function CommentBox({ issue, environmentId }: { issue: Issue; environmentId: str
     const [comment, setComment] = useState('');
     const [action, setAction] = useState<StatusAction>(issue.status === 'open' ? 'resolve' : 'open');
     const [processing, setProcessing] = useState(false);
-    const options = { preserveScroll: true, onStart: () => setProcessing(true), onFinish: () => setProcessing(false), onSuccess: () => setComment('') };
+    const options = {
+        preserveScroll: true,
+        onStart: () => setProcessing(true),
+        onFinish: () => setProcessing(false),
+        onSuccess: () => setComment(''),
+    };
     const available = (Object.keys(COMMENT_ACTIONS) as StatusAction[]).filter((key) =>
-        issue.status === 'open' ? key !== 'open' && !(key === 'resolve_on_deploy' && issue.resolve_on_deploy_environment_id) : key === 'open' || (key === 'resolve' ? issue.status !== 'resolved' : key === 'ignore' && issue.status !== 'ignored'),
+        issue.status === 'open'
+            ? key !== 'open' && !(key === 'resolve_on_deploy' && issue.resolve_on_deploy_environment_id)
+            : key === 'open' || (key === 'resolve' ? issue.status !== 'resolved' : key === 'ignore' && issue.status !== 'ignored'),
     );
     const current = available.includes(action) ? action : available[0];
 
@@ -400,7 +477,12 @@ function CommentBox({ issue, environmentId }: { issue: Issue; environmentId: str
             <div className={cn('mt-3 flex justify-end gap-2', processing && 'animate-pulse')}>
                 {current && (
                     <div className="flex">
-                        <button type="button" onClick={changeStatus} disabled={processing} className="h-8 rounded-l-md border border-zinc-200 bg-white px-3 text-sm text-zinc-600 hover:bg-zinc-50">
+                        <button
+                            type="button"
+                            onClick={changeStatus}
+                            disabled={processing}
+                            className="h-8 rounded-l-md border border-zinc-200 bg-white px-3 text-sm text-zinc-600 hover:bg-zinc-50"
+                        >
                             {COMMENT_ACTIONS[current].label}
                             {comment.trim() ? ' with comment' : ''}
                         </button>
@@ -444,10 +526,14 @@ function Occurrences(props: Props) {
         <section className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-1.5">
             <div className="flex items-center justify-between p-2 pb-3 pl-3">
                 <span className="text-base font-medium">
-                    {occurrences ? `${occurrences.total ? formatNumber(occurrences.total) : 'No'} ${occurrences.total === 1 ? 'occurrence' : 'occurrences'}` : 'Occurrences'}
+                    {occurrences
+                        ? `${occurrences.total ? formatNumber(occurrences.total) : 'No'} ${occurrences.total === 1 ? 'occurrence' : 'occurrences'}`
+                        : 'Occurrences'}
                 </span>
                 <div className="flex items-center gap-2">
-                    {occurrences && occurrences.total > 0 && <span className="px-3 text-sm whitespace-nowrap text-zinc-600">Last {props.lookback_period} days</span>}
+                    {occurrences && occurrences.total > 0 && (
+                        <span className="px-3 text-sm whitespace-nowrap text-zinc-600">Last {props.lookback_period} days</span>
+                    )}
                     {environments.length > 1 ? (
                         <Select value={environment.id} onValueChange={(id) => router.get(issueUrl(id, issue.ref), {}, { replace: true })}>
                             <SelectTrigger className="h-8 w-auto gap-2 bg-white">
@@ -475,7 +561,10 @@ function Occurrences(props: Props) {
                     )}
                     <Link
                         href={viewAll}
-                        className={cn('flex h-8 items-center rounded-md border border-zinc-200 bg-white px-3 text-sm hover:bg-zinc-50', !occurrences?.total && 'pointer-events-none opacity-50')}
+                        className={cn(
+                            'flex h-8 items-center rounded-md border border-zinc-200 bg-white px-3 text-sm hover:bg-zinc-50',
+                            !occurrences?.total && 'pointer-events-none opacity-50',
+                        )}
                     >
                         View all
                     </Link>
@@ -488,7 +577,11 @@ function Occurrences(props: Props) {
                             <DataTable<OccurrenceRow>
                                 rows={occurrences!.data}
                                 rowKey={(row, index) => `${row.timestamp}-${index}`}
-                                rowHref={issue.issueable_type === 'exception' ? undefined : (row) => executionUrl(environment.id, issue.issueable_type, row)}
+                                rowHref={
+                                    issue.issueable_type === 'exception'
+                                        ? undefined
+                                        : (row) => executionUrl(environment.id, issue.issueable_type, row)
+                                }
                                 columns={occurrenceColumns(issue.issueable_type)}
                             />
                             <Pagination paginator={occurrences!} />
@@ -520,22 +613,45 @@ function executionUrl(environmentId: string, type: Issue['issueable_type'], row:
 }
 
 function occurrenceColumns(type: Issue['issueable_type']): Column<OccurrenceRow>[] {
-    const when: Column<OccurrenceRow> = { key: 'timestamp', label: 'Date', width: '80px', render: (row) => <ShortTimeAgo value={row.timestamp} className="text-zinc-600" /> };
-    const duration: Column<OccurrenceRow> = { key: 'duration', label: 'Duration', width: '90px', align: 'right', render: (row) => formatDuration(row.duration ?? null) };
-    const statusText = (ok: boolean, label: string) => <span className={cn('font-medium uppercase', ok ? 'text-emerald-600' : 'text-rose-600')}>{label}</span>;
+    const when: Column<OccurrenceRow> = {
+        key: 'timestamp',
+        label: 'Date',
+        width: '80px',
+        render: (row) => <ShortTimeAgo value={row.timestamp} className="text-zinc-600" />,
+    };
+    const duration: Column<OccurrenceRow> = {
+        key: 'duration',
+        label: 'Duration',
+        width: '90px',
+        align: 'right',
+        render: (row) => formatDuration(row.duration ?? null),
+    };
+    const statusText = (ok: boolean, label: string) => (
+        <span className={cn('font-medium uppercase', ok ? 'text-emerald-600' : 'text-rose-600')}>{label}</span>
+    );
 
     switch (type) {
         case 'exception':
             return [
                 when,
-                { key: 'source', label: 'Source', width: '210px', render: (row) => (row.execution_source !== undefined ? <SourceLink row={row as ExecutionSource} /> : null) },
+                {
+                    key: 'source',
+                    label: 'Source',
+                    width: '210px',
+                    render: (row) => (row.execution_source !== undefined ? <SourceLink row={row as ExecutionSource} /> : null),
+                },
                 { key: 'message', label: 'Message', render: (row) => <span className="block truncate">{row.message}</span> },
                 {
                     key: 'user',
                     label: 'User',
                     width: '120px',
                     align: 'right',
-                    render: (row) => (row.user?.id ? <span className="truncate">{row.user.username ?? row.user.name ?? row.user.id}</span> : <span className="text-zinc-400">Guest</span>),
+                    render: (row) =>
+                        row.user?.id ? (
+                            <span className="truncate">{row.user.username ?? row.user.name ?? row.user.id}</span>
+                        ) : (
+                            <span className="text-zinc-400">Guest</span>
+                        ),
                 },
             ];
         case 'route':
@@ -550,13 +666,24 @@ function occurrenceColumns(type: Issue['issueable_type']): Column<OccurrenceRow>
             return [
                 when,
                 { key: 'status', label: 'Status', width: '100px', render: (row) => statusText(row.status !== 'failed', row.status ?? '') },
-                { key: 'details', label: 'Details', render: (row) => <span className="block truncate">{`Attempt ${row.attempt} on ${row.queue} queue using ${row.connection} connection`}</span> },
+                {
+                    key: 'details',
+                    label: 'Details',
+                    render: (row) => (
+                        <span className="block truncate">{`Attempt ${row.attempt} on ${row.queue} queue using ${row.connection} connection`}</span>
+                    ),
+                },
                 duration,
             ];
         case 'command':
             return [
                 when,
-                { key: 'status', label: 'Status', width: '80px', render: (row) => statusText(row.exit_code === 0, row.exit_code === 0 ? 'Success' : 'Failed') },
+                {
+                    key: 'status',
+                    label: 'Status',
+                    width: '80px',
+                    render: (row) => statusText(row.exit_code === 0, row.exit_code === 0 ? 'Success' : 'Failed'),
+                },
                 { key: 'command', label: 'Command', render: (row) => <span className="block truncate">{row.command || row.name}</span> },
                 duration,
             ];
@@ -568,4 +695,76 @@ function occurrenceColumns(type: Issue['issueable_type']): Column<OccurrenceRow>
                 duration,
             ];
     }
+}
+
+/** "Copy for AI": the issue, its exception and stack trace, recent occurrences and activity. */
+function issueToMarkdown(props: Props): string {
+    const { issue, environment, details } = props;
+    const lines: string[] = [`# Issue #${issue.ref}: ${issue.title}`, '', `Exported from Raccoon: ${window.location.href}`, ''];
+
+    lines.push(
+        '## Details',
+        '',
+        `- **Status:** ${issue.status}`,
+        `- **Priority:** ${PRIORITIES[issue.priority]?.label ?? issue.priority}`,
+        `- **Assignee:** ${issue.user?.name ?? 'unassigned'}`,
+        `- **Type:** ${issue.issueable_type}`,
+        `- **First seen:** ${issue.first_seen_at}`,
+        `- **Last seen:** ${issue.last_seen_at}`,
+        ...props.environment_stats.map(
+            (stat) => `- **Occurrences in ${stat.environment.name}** (last ${props.environment_stats_period} days): ${stat.count}`,
+        ),
+        '',
+    );
+
+    if (issue.subtitle) lines.push(issue.subtitle, '');
+    if (issue.description) lines.push('## Description', '', issue.description, '');
+
+    if (issue.issueable_type === 'exception' && details.trace) {
+        const exception = exceptionToMarkdown(
+            {
+                class: details.class ?? issue.title,
+                code: details.code ?? '0',
+                file: details.file ?? '',
+                line: details.line ?? 0,
+                message: details.message ?? '',
+                handled: details.handled ?? false,
+                trace: details.trace,
+                php_version: details.php_version ?? null,
+                laravel_version: details.laravel_version ?? null,
+            },
+            details.trace,
+        );
+
+        // Nest the exception's headings under this document's.
+        lines.push(exception.replace(/^(#+ )/gm, '#$1'), '');
+    }
+
+    const occurrences = props.occurrences?.data ?? [];
+
+    if (occurrences.length > 0) {
+        lines.push(
+            `## Recent occurrences (${environment.name})`,
+            '',
+            '| Date (UTC) | Source | Message | User | Link |',
+            '| --- | --- | --- | --- | --- |',
+        );
+        occurrences.forEach((row) => {
+            const source = [row.execution_source, row.execution_preview ?? (row.method ? `${row.method} ${row.url}` : '')].filter(Boolean).join(' ');
+            const link = row.execution_url ? `${window.location.origin}${envUrl(environment.id, row.execution_url)}` : '';
+            const user = row.user ? (row.user.username ?? row.user.name ?? row.user.id) : '';
+            lines.push(`| ${row.timestamp} | ${source} | ${(row.message ?? '').replace(/\|/g, '\\|')} | ${user || 'guest'} | ${link} |`);
+        });
+        lines.push('');
+    }
+
+    if (issue.activityLogs.length > 0) {
+        lines.push('## Activity', '');
+        issue.activityLogs.forEach((log) => {
+            const comment = log.payload.comment ? `: ${log.payload.comment}` : '';
+            lines.push(`- ${log.timestamp} ${log.user?.name ?? 'Raccoon'} ${log.event.replace(/_/g, ' ')}${comment}`);
+        });
+    }
+
+    return lines.join('\n').trim() + '\n';
 }

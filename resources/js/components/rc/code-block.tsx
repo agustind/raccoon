@@ -21,5 +21,11 @@ export default function CodeBlock({ code, json = false, className }: { code: str
         return <div className={cn('rounded-lg bg-zinc-50 p-4 font-mono text-xs text-zinc-400', className)}>Empty</div>;
     }
 
-    return <pre className={cn('overflow-x-auto rounded-lg bg-zinc-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-zinc-800', className)}>{text}</pre>;
+    return (
+        <pre
+            className={cn('overflow-x-auto rounded-lg bg-zinc-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-zinc-800', className)}
+        >
+            {text}
+        </pre>
+    );
 }

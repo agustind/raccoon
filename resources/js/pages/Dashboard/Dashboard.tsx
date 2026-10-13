@@ -1,10 +1,10 @@
-import { COLORS, DURATION_SERIES, DurationLineChart, StackedBarChart } from '@/components/rc/charts';
-import type { LegendItem, Series } from '@/components/rc/charts';
-import Deferred from '@/components/rc/deferred';
 import { MethodBadge } from '@/components/rc/badges';
+import type { LegendItem, Series } from '@/components/rc/charts';
+import { COLORS, DURATION_SERIES, DurationLineChart, StackedBarChart } from '@/components/rc/charts';
+import Deferred from '@/components/rc/deferred';
 import PeriodPicker from '@/components/rc/period-picker';
-import { RequestCharts } from '@/components/rc/request-charts';
 import type { RequestStats } from '@/components/rc/request-charts';
+import { RequestCharts } from '@/components/rc/request-charts';
 import { Card, Label, Panel } from '@/components/rc/section';
 import EnvironmentLayout from '@/layouts/environment-layout';
 import { formatCompact, formatDuration, formatDurationRange, pluralize } from '@/lib/format';
@@ -88,7 +88,11 @@ export default function Dashboard(props: Props) {
     return (
         <EnvironmentLayout title="Dashboard" actions={<PeriodPicker period={props.period} />}>
             <div className="grid gap-10">
-                <Panel icon={SquareActivity} title="Activity" actions={<HeaderLink href={withPeriod(envUrl(env.id, 'requests'))}>Requests</HeaderLink>}>
+                <Panel
+                    icon={SquareActivity}
+                    title="Activity"
+                    actions={<HeaderLink href={withPeriod(envUrl(env.id, 'requests'))}>Requests</HeaderLink>}
+                >
                     <Deferred data={['requestsGraph', 'requestStats']} className="h-80">
                         {() => (
                             <RequestCharts
@@ -117,14 +121,24 @@ export default function Dashboard(props: Props) {
                                                 message={`${stats.total > 0 ? stats.total.toLocaleString() : 'No'} ${stats.total === 1 ? 'exception' : 'exceptions'} reported`}
                                                 period={period}
                                             />
-                                            {stats.total > 0 && <p className="font-light text-zinc-500">Errors have impacted {stats.impacted_users.toLocaleString()} users.</p>}
+                                            {stats.total > 0 && (
+                                                <p className="font-light text-zinc-500">
+                                                    Errors have impacted {stats.impacted_users.toLocaleString()} users.
+                                                </p>
+                                            )}
                                         </div>
                                         {stats.total > 0 ? (
                                             <div className="grow">
                                                 <div className="h-32">
                                                     <StackedBarChart data={graph} series={EXCEPTION_SERIES} />
                                                 </div>
-                                                <BottomLegend items={EXCEPTION_SERIES.map((s) => ({ label: s.label, color: s.color, value: formatCompact(sum(graph, s.key)) }))} />
+                                                <BottomLegend
+                                                    items={EXCEPTION_SERIES.map((s) => ({
+                                                        label: s.label,
+                                                        color: s.color,
+                                                        value: formatCompact(sum(graph, s.key)),
+                                                    }))}
+                                                />
                                             </div>
                                         ) : (
                                             <EmptyState />
@@ -207,8 +221,16 @@ export default function Dashboard(props: Props) {
 
                                 return (
                                     <StatusCard>
-                                        <CardStatus label="Requests" message={users.length > 0 ? 'Most active users' : 'No active users'} period={period} />
-                                        {users.length > 0 ? <UserList users={users.slice(0, 3)} more={users.length} environmentId={env.id} /> : <EmptyState />}
+                                        <CardStatus
+                                            label="Requests"
+                                            message={users.length > 0 ? 'Most active users' : 'No active users'}
+                                            period={period}
+                                        />
+                                        {users.length > 0 ? (
+                                            <UserList users={users.slice(0, 3)} more={users.length} environmentId={env.id} />
+                                        ) : (
+                                            <EmptyState />
+                                        )}
                                         <div className="flex justify-end">{users.length > 0 ? <ViewLink href={usersUrl} /> : <NoActions />}</div>
                                     </StatusCard>
                                 );
@@ -282,7 +304,11 @@ function SlowRoutesCard({ slowRoutes, period }: { slowRoutes: { routes: SlowRout
 
     return (
         <StatusCard>
-            <CardStatus label="Routes" message={routes.length > 0 ? `${pluralize(routes.length, 'route')} exceeded thresholds` : 'No routes exceeded thresholds'} period={period} />
+            <CardStatus
+                label="Routes"
+                message={routes.length > 0 ? `${pluralize(routes.length, 'route')} exceeded thresholds` : 'No routes exceeded thresholds'}
+                period={period}
+            />
             {routes.length > 0 ? (
                 <div className="relative grow">
                     <div className="relative z-1 space-y-2">
@@ -313,7 +339,17 @@ function SlowRoutesCard({ slowRoutes, period }: { slowRoutes: { routes: SlowRout
     );
 }
 
-function UserList({ users, more, environmentId, countType }: { users: UserCount[]; more: number; environmentId: string; countType?: 'neutral' | 'warning' }) {
+function UserList({
+    users,
+    more,
+    environmentId,
+    countType,
+}: {
+    users: UserCount[];
+    more: number;
+    environmentId: string;
+    countType?: 'neutral' | 'warning';
+}) {
     return (
         <div className="relative grow">
             <div className="relative z-1 space-y-2">
@@ -370,7 +406,8 @@ function BottomLegend({ items }: { items: LegendItem[] }) {
     );
 }
 
-const secondaryButton = 'inline-flex h-8 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 shadow-xs hover:bg-zinc-50';
+const secondaryButton =
+    'inline-flex h-8 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 shadow-xs hover:bg-zinc-50';
 
 function HeaderLink({ href, children }: { href: string; children: ReactNode }) {
     return (

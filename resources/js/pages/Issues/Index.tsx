@@ -76,7 +76,8 @@ export default function IssuesIndex(props: Props) {
         setAnchor(ref);
     };
 
-    const patch = (ref: number, data: Record<string, number | null>) => router.patch(issueUrl(env.id, ref), data, { preserveScroll: true, preserveState: true });
+    const patch = (ref: number, data: Record<string, number | null>) =>
+        router.patch(issueUrl(env.id, ref), data, { preserveScroll: true, preserveState: true });
     const allChecked = selected.length === 0 ? false : selected.length < refs.length ? 'indeterminate' : true;
     const query = typeof window !== 'undefined' ? window.location.search : '';
 
@@ -85,8 +86,18 @@ export default function IssuesIndex(props: Props) {
             title="Issues"
             heading={
                 <span className="inline-flex h-9 items-center rounded-lg border border-zinc-200 bg-zinc-50 p-0.5 align-middle text-sm font-normal tracking-normal">
-                    <TypeTab href={envUrl(env.id, 'issues/exceptions') + query} active={props.type === 'exception'} label="Exceptions" count={props.filterStats.exception} />
-                    <TypeTab href={envUrl(env.id, 'issues/performance') + query} active={props.type === 'alert'} label="Performance" count={props.filterStats.alert} />
+                    <TypeTab
+                        href={envUrl(env.id, 'issues/exceptions') + query}
+                        active={props.type === 'exception'}
+                        label="Exceptions"
+                        count={props.filterStats.exception}
+                    />
+                    <TypeTab
+                        href={envUrl(env.id, 'issues/performance') + query}
+                        active={props.type === 'alert'}
+                        label="Performance"
+                        count={props.filterStats.alert}
+                    />
                 </span>
             }
             actions={
@@ -136,7 +147,14 @@ export default function IssuesIndex(props: Props) {
                         label: <PrioritySymbol priority={props.sortBy === 'priority' && props.sortDirection === 'desc' ? 3 : 0} />,
                         width: '40px',
                         sortable: true,
-                        render: (row) => <PriorityPicker value={row.priority} showLabel={false} onChange={(priority) => patch(row.ref, { priority })} className="relative z-10 p-1" />,
+                        render: (row) => (
+                            <PriorityPicker
+                                value={row.priority}
+                                showLabel={false}
+                                onChange={(priority) => patch(row.ref, { priority })}
+                                className="relative z-10 p-1"
+                            />
+                        ),
                     },
                     {
                         key: 'title',
@@ -144,7 +162,12 @@ export default function IssuesIndex(props: Props) {
                         sortable: true,
                         render: (row) => (
                             <div className="flex min-w-0 flex-col gap-0.5">
-                                <span className={cn('flex items-center gap-1.5 truncate font-sans text-sm', row.resolve_on_deploy_environment_id && 'text-zinc-500')}>
+                                <span
+                                    className={cn(
+                                        'flex items-center gap-1.5 truncate font-sans text-sm',
+                                        row.resolve_on_deploy_environment_id && 'text-zinc-500',
+                                    )}
+                                >
                                     {row.resolve_on_deploy_environment_id && <Hourglass className="size-3.5 shrink-0 text-emerald-500" />}
                                     <span className="truncate">{row.title}</span>
                                 </span>
@@ -160,7 +183,14 @@ export default function IssuesIndex(props: Props) {
                                   width: '60px',
                                   align: 'right' as const,
                                   sortable: true,
-                                  render: (row: IssueRow) => <span className="text-zinc-600" title={`${formatNumber(row.occurrences)} occurrences in the last ${auth.org?.lookback_period ?? 30} days`}>{formatCompact(row.occurrences)}</span>,
+                                  render: (row: IssueRow) => (
+                                      <span
+                                          className="text-zinc-600"
+                                          title={`${formatNumber(row.occurrences)} occurrences in the last ${auth.org?.lookback_period ?? 30} days`}
+                                      >
+                                          {formatCompact(row.occurrences)}
+                                      </span>
+                                  ),
                               },
                               {
                                   key: 'users',
@@ -168,19 +198,58 @@ export default function IssuesIndex(props: Props) {
                                   width: '60px',
                                   align: 'right' as const,
                                   sortable: true,
-                                  render: (row: IssueRow) => <span className="text-zinc-600" title={`${formatNumber(row.impacted_users)} users impacted in the last ${auth.org?.lookback_period ?? 30} days`}>{formatCompact(row.impacted_users)}</span>,
+                                  render: (row: IssueRow) => (
+                                      <span
+                                          className="text-zinc-600"
+                                          title={`${formatNumber(row.impacted_users)} users impacted in the last ${auth.org?.lookback_period ?? 30} days`}
+                                      >
+                                          {formatCompact(row.impacted_users)}
+                                      </span>
+                                  ),
                               },
                           ]
-                        : [{ key: 'type', label: 'Type', width: '120px', sortable: true, render: (row: IssueRow) => <span className="text-zinc-600">{TYPE_LABELS[row.issueable_type] ?? row.issueable_type}</span> }]),
-                    { key: 'first_seen', label: <span className="whitespace-nowrap">First seen</span>, width: '100px', align: 'right', sortable: true, render: (row) => <ShortTimeAgo value={row.first_seen_at} className="text-zinc-600" /> },
-                    { key: 'last_seen', label: <span className="whitespace-nowrap">Last seen</span>, width: '100px', align: 'right', sortable: true, render: (row) => <ShortTimeAgo value={row.last_seen_at} className="text-zinc-600" /> },
+                        : [
+                              {
+                                  key: 'type',
+                                  label: 'Type',
+                                  width: '120px',
+                                  sortable: true,
+                                  render: (row: IssueRow) => (
+                                      <span className="text-zinc-600">{TYPE_LABELS[row.issueable_type] ?? row.issueable_type}</span>
+                                  ),
+                              },
+                          ]),
+                    {
+                        key: 'first_seen',
+                        label: <span className="whitespace-nowrap">First seen</span>,
+                        width: '100px',
+                        align: 'right',
+                        sortable: true,
+                        render: (row) => <ShortTimeAgo value={row.first_seen_at} className="text-zinc-600" />,
+                    },
+                    {
+                        key: 'last_seen',
+                        label: <span className="whitespace-nowrap">Last seen</span>,
+                        width: '100px',
+                        align: 'right',
+                        sortable: true,
+                        render: (row) => <ShortTimeAgo value={row.last_seen_at} className="text-zinc-600" />,
+                    },
                     {
                         key: 'assigned',
                         label: 'Assigned',
                         width: '80px',
                         align: 'center',
                         sortable: true,
-                        render: (row) => <AssigneePicker value={row.user?.id ?? null} users={props.users} showName={false} onChange={(user_id) => patch(row.ref, { user_id })} className="relative z-10 p-1" />,
+                        render: (row) => (
+                            <AssigneePicker
+                                value={row.user?.id ?? null}
+                                users={props.users}
+                                showName={false}
+                                onChange={(user_id) => patch(row.ref, { user_id })}
+                                className="relative z-10 p-1"
+                            />
+                        ),
                     },
                 ]}
             />
@@ -205,7 +274,15 @@ export default function IssuesIndex(props: Props) {
 
 function TypeTab({ href, active, label, count }: { href: string; active: boolean; label: string; count: number }) {
     return (
-        <Link href={href} replace preserveScroll className={cn('flex h-full items-center gap-2 rounded-md px-3 text-zinc-600 hover:text-zinc-900', active && 'bg-white text-zinc-900 shadow-xs')}>
+        <Link
+            href={href}
+            replace
+            preserveScroll
+            className={cn(
+                'flex h-full items-center gap-2 rounded-md px-3 text-zinc-600 hover:text-zinc-900',
+                active && 'bg-white text-zinc-900 shadow-xs',
+            )}
+        >
             {label}
             <span className={cn('rounded px-1 font-mono text-[10px]', active ? 'bg-zinc-800 text-white' : 'bg-zinc-200 text-zinc-600')}>{count}</span>
         </Link>
