@@ -44,6 +44,7 @@ Railway, defined in `.railway/railway.ts` (see `docs/railway.md`). One Docker im
 - Services: `docker compose up -d` (Postgres on 5544, ClickHouse on 8123). App: `php artisan serve --port=8000`. Assets: `npm run dev` (keep running; do not run `npm run build` while it runs).
 - The first account you register owns a new organization. Later accounts need an invite or `RACCOON_ALLOW_REGISTRATION=true`.
 - Inspect a page's props without a browser: `php artisan dev:inertia "/environments/<id>/requests?period=24h" --defer [--keys]`.
+- Check pages without disturbing the person at the computer: `node scripts/screenshot.mjs [--dark] [--full] [--out dir] <path>...` runs Chrome headless, signs in with `SCREENSHOT_EMAIL`/`SCREENSHOT_PASSWORD`, saves PNGs (default `storage/screenshots/`) and prints console and HTTP errors per page. Never open a visible browser window, and keep dev servers in the background.
 - Type check: `npx tsc --noEmit`. Lint: `npx eslint resources/js/<paths>`.
 - Create an environment and print its token: `php artisan raccoon:environment "App" Production --user=<email>`.
 
