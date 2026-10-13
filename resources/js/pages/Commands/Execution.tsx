@@ -1,9 +1,11 @@
 import { Pill } from '@/components/rc/badges';
 import ExecutionDetail, { DateRow } from '@/components/rc/commands-detail';
+import CopyMarkdownButton from '@/components/rc/copy-markdown-button';
 import { DeploymentRow } from '@/components/rc/execution-details';
 import { KeyValue } from '@/components/rc/key-value';
 import EnvironmentLayout from '@/layouts/environment-layout';
-import { formatBytes } from '@/lib/format';
+import { executionToMarkdown } from '@/lib/export-markdown';
+import { formatBytes, formatDuration } from '@/lib/format';
 import { envUrl, withPeriod } from '@/lib/rc';
 import type { Deployment, EventSummary, ExceptionRow, Execution, IssueLink, LogRow, PageProps } from '@/types/raccoon';
 import { usePage } from '@inertiajs/react';
@@ -50,6 +52,33 @@ export default function CommandsExecution(props: Props) {
                 { title: 'Commands', href: withPeriod(envUrl(env.id, 'commands')) },
                 { title: c.name, href: withPeriod(envUrl(env.id, `commands/${c.group}`)) },
             ]}
+            actions={
+                <CopyMarkdownButton
+                    filename={`command-${c.trace_id}.md`}
+                    build={() =>
+                        executionToMarkdown({
+                            title: c.command,
+                            kind: 'command',
+                            fields: [
+                                ['Exit code', c.exit_code],
+                                ['Date', `${c.timestamp} UTC`],
+                                ['Duration', formatDuration(c.duration)],
+                                ['Class', c.class],
+                                ['Server', c.server],
+                                ['Peak memory', formatBytes(c.peak_memory_usage)],
+                                ['Trace ID', c.trace_id],
+                            ],
+                            deployment: props.deployment,
+                            summary: props.summary,
+                            executions: props.executions,
+                            currentId: c.trace_id,
+                            exceptions: props.exceptions,
+                            logs: props.logs,
+                            blocks: [{ title: 'Context', content: c.context }],
+                        })
+                    }
+                />
+            }
         >
             <ExecutionDetail
                 info={

@@ -1,5 +1,6 @@
 import { StatusText } from '@/components/rc/badges';
 import CodeBlock from '@/components/rc/code-block';
+import CopyMarkdownButton from '@/components/rc/copy-markdown-button';
 import { Collapsible, DeploymentRow, EventsSummary, ExceptionsCard, LogsCard } from '@/components/rc/execution-details';
 import { AttemptSwitcher, type AttemptLink } from '@/components/rc/jobs-attempt-details';
 import { attemptUrl } from '@/components/rc/jobs-details-drawer';
@@ -8,7 +9,8 @@ import { Card } from '@/components/rc/section';
 import Timeline from '@/components/rc/timeline';
 import Timestamp from '@/components/rc/timestamp';
 import EnvironmentLayout from '@/layouts/environment-layout';
-import { formatBytes } from '@/lib/format';
+import { executionToMarkdown } from '@/lib/export-markdown';
+import { formatBytes, formatDuration } from '@/lib/format';
 import { envUrl, withPeriod } from '@/lib/rc';
 import type { AppUser, Deployment, EventSummary, ExceptionRow, Execution, IssueLink, LogRow, PageProps } from '@/types/raccoon';
 import { Link, usePage } from '@inertiajs/react';
@@ -64,14 +66,46 @@ export default function JobsAttempt(props: Props) {
                 { title: a.name, href: withPeriod(envUrl(env.id, `jobs/${a.group}`)) },
             ]}
             actions={
-                props.attempts.length > 1 && (
-                    <AttemptSwitcher
-                        attempts={props.attempts}
-                        current={a}
-                        total={props.attempts_count}
-                        href={(attempt) => attemptUrl(env.id, a.group, { job_id: a.job_id, attempt_id: attempt.attempt_id })}
+                <>
+                    <CopyMarkdownButton
+                        filename={`job-attempt-${a.attempt_id}.md`}
+                        build={() =>
+                            executionToMarkdown({
+                                title: a.name,
+                                kind: 'job attempt',
+                                fields: [
+                                    ['Status', a.status],
+                                    ['Attempt', a.attempt],
+                                    ['Date', `${a.timestamp} UTC`],
+                                    ['Queued at', a.queued_at ? `${a.queued_at} UTC` : null],
+                                    ['Duration', formatDuration(a.duration)],
+                                    ['Connection', a.connection],
+                                    ['Queue', a.queue],
+                                    ['Server', a.server],
+                                    ['Peak memory', formatBytes(a.peak_memory_usage)],
+                                    ['Job ID', a.job_id],
+                                    ['Attempt ID', a.attempt_id],
+                                    ['Trace ID', a.trace_id],
+                                ],
+                                deployment: props.deployment,
+                                summary: props.summary,
+                                executions: props.executions,
+                                currentId: a.attempt_id,
+                                exceptions: props.exceptions,
+                                logs: props.logs,
+                                blocks: [{ title: 'Context', content: a.context }],
+                            })
+                        }
                     />
-                )
+                    {props.attempts.length > 1 && (
+                        <AttemptSwitcher
+                            attempts={props.attempts}
+                            current={a}
+                            total={props.attempts_count}
+                            href={(attempt) => attemptUrl(env.id, a.group, { job_id: a.job_id, attempt_id: attempt.attempt_id })}
+                        />
+                    )}
+                </>
             }
         >
             {jobIssues.length > 0 && (

@@ -1,12 +1,14 @@
 import { MethodPill, StatusPill } from '@/components/rc/badges';
 import CodeBlock from '@/components/rc/code-block';
+import CopyMarkdownButton from '@/components/rc/copy-markdown-button';
 import { Collapsible, DeploymentRow, EventsSummary, ExceptionsCard, LogsCard } from '@/components/rc/execution-details';
 import { KeyValue } from '@/components/rc/key-value';
 import { Card } from '@/components/rc/section';
 import Timeline from '@/components/rc/timeline';
 import Timestamp from '@/components/rc/timestamp';
 import EnvironmentLayout from '@/layouts/environment-layout';
-import { formatBytes } from '@/lib/format';
+import { executionToMarkdown } from '@/lib/export-markdown';
+import { formatBytes, formatDuration } from '@/lib/format';
 import { envUrl, withPeriod } from '@/lib/rc';
 import type { AppUser, Deployment, EventSummary, ExceptionRow, Execution, IssueLink, LogRow, PageProps } from '@/types/raccoon';
 import { Link, usePage } from '@inertiajs/react';
@@ -69,6 +71,43 @@ export default function RequestsShow(props: Props) {
                 { title: 'Requests', href: withPeriod(envUrl(env.id, 'requests')) },
                 { title: r.route_path || 'Route', href: withPeriod(envUrl(env.id, `requests/routes/${r.group}`)) },
             ]}
+            actions={
+                <CopyMarkdownButton
+                    filename={`request-${r.trace_id}.md`}
+                    build={() =>
+                        executionToMarkdown({
+                            title: `${r.method} ${r.route_path || r.url}`,
+                            kind: 'request',
+                            fields: [
+                                ['URL', `${r.method} ${r.url}`],
+                                ['Date', `${r.timestamp} UTC`],
+                                ['Status', r.status_code],
+                                ['Duration', formatDuration(r.duration)],
+                                ['Route', r.route_name],
+                                ['Action', r.route_action],
+                                ['Server', r.server],
+                                ['Request size', formatBytes(r.request_size)],
+                                ['Response size', formatBytes(r.response_size)],
+                                ['Peak memory', formatBytes(r.peak_memory_usage)],
+                                ['User', r.user.username ?? r.user.name ?? (r.user.id || 'guest')],
+                                ['IP', r.ip],
+                                ['Trace ID', r.trace_id],
+                            ],
+                            deployment: props.deployment,
+                            summary: props.summary,
+                            executions: props.executions,
+                            currentId: r.trace_id,
+                            exceptions: props.exceptions,
+                            logs: props.logs,
+                            blocks: [
+                                { title: 'Headers', content: r.headers },
+                                { title: 'Payload', content: r.payload },
+                                { title: 'Context', content: r.context },
+                            ],
+                        })
+                    }
+                />
+            }
         >
             <Card>
                 <div className="flex items-center gap-2 border-b border-zinc-200 px-5 py-3.5 font-mono text-sm">
